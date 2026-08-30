@@ -16,15 +16,32 @@ export function createApp(): Application {
   // Global Security Headers
   app.use(helmet());
 
-  // CORS Configuration
+  // CORS Configuration - Supports Portfolio (3000), Admin Panel (3001), and configured CORS_ORIGIN
+  const allowedOrigins = config.corsOrigin.split(",").map((o) => o.trim());
+
   app.use(
     cors({
-      origin: config.corsOrigin,
+      origin: (origin, callback) => {
+        // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+        if (!origin) return callback(null, true);
+
+        // Check if origin is in whitelist or is localhost in development
+        const isAllowed =
+          allowedOrigins.includes(origin) ||
+          (!config.isProduction && (origin.includes("localhost:3000") || origin.includes("localhost:3001") || origin.includes("127.0.0.1")));
+
+        if (isAllowed) {
+          callback(null, true);
+        } else {
+          callback(new Error(`CORS origin not allowed: ${origin}`));
+        }
+      },
       credentials: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization"],
     })
   );
+
 
   // Body Parser Limits
   app.use(express.json({ limit: "1mb" }));
