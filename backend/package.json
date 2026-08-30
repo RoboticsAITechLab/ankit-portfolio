@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test tests/**/*.test.ts"
+    "test": "tsx --test tests/**/*.test.ts",
+    "db:migrate": "tsx src/scripts/migrate.ts"
   },
   "keywords": [],
   "author": "",
