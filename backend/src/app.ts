@@ -25,10 +25,18 @@ export function createApp(): Application {
         // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
         if (!origin) return callback(null, true);
 
-        // Check if origin is in whitelist or is localhost in development
+        // If wildcard '*' is specified or present in allowedOrigins
+        if (allowedOrigins.includes("*")) {
+          return callback(null, true);
+        }
+
+        // Check if origin is in whitelist or matches vercel deployment
         const isAllowed =
           allowedOrigins.includes(origin) ||
-          (!config.isProduction && (origin.includes("localhost:3000") || origin.includes("localhost:3001") || origin.includes("127.0.0.1")));
+          origin.includes("vercel.app") ||
+          origin.includes("localhost:3000") ||
+          origin.includes("localhost:3001") ||
+          origin.includes("127.0.0.1");
 
         if (isAllowed) {
           callback(null, true);
@@ -41,6 +49,7 @@ export function createApp(): Application {
       allowedHeaders: ["Content-Type", "Authorization"],
     })
   );
+
 
 
   // Body Parser Limits
