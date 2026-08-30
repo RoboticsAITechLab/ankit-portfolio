@@ -35,12 +35,14 @@ export function ProjectManagementClient() {
           id: p.id,
           slug: p.slug,
           title: p.title,
-          description: p.description,
-          category: p.category,
+          shortDescription: p.description,
+          longDescription: p.long_description || p.description,
+          category: (p.category as any) || "Full-Stack",
           technologies: p.technologies || [],
           status: p.published ? "Published" : "Draft",
-          demoUrl: p.demo_url || undefined,
+          liveUrl: p.demo_url || undefined,
           githubUrl: p.github_url || undefined,
+          updatedAt: new Date(p.updated_at || p.created_at).toISOString().split("T")[0],
         }));
         setProjects(mapped);
       }
@@ -113,11 +115,12 @@ export function ProjectManagementClient() {
       const payload = {
         slug: savedProject.slug,
         title: savedProject.title,
-        description: savedProject.description,
+        description: savedProject.shortDescription,
+        long_description: savedProject.longDescription || savedProject.shortDescription,
         category: savedProject.category,
         technologies: savedProject.technologies,
         github_url: savedProject.githubUrl || null,
-        demo_url: savedProject.demoUrl || null,
+        demo_url: savedProject.liveUrl || null,
         published: savedProject.status === "Published",
       };
 
@@ -127,12 +130,14 @@ export function ProjectManagementClient() {
           id: res.data.id,
           slug: res.data.slug,
           title: res.data.title,
-          description: res.data.description,
-          category: res.data.category,
+          shortDescription: res.data.description,
+          longDescription: res.data.long_description || res.data.description,
+          category: (res.data.category as any) || "Full-Stack",
           technologies: res.data.technologies || [],
           status: res.data.published ? "Published" : "Draft",
-          demoUrl: res.data.demo_url || undefined,
+          liveUrl: res.data.demo_url || undefined,
           githubUrl: res.data.github_url || undefined,
+          updatedAt: new Date().toISOString().split("T")[0],
         };
         setProjects((prev) => [mapped, ...prev]);
       }
@@ -143,6 +148,7 @@ export function ProjectManagementClient() {
     setIsFormOpen(false);
     setEditingProject(null);
   };
+
 
   // Open Delete Confirmation
   const handleOpenDelete = (project: AdminProject) => {

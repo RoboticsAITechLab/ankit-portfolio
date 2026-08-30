@@ -72,51 +72,54 @@ export function AnalyticsClient() {
       {/* 2. METRIC STAT CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <AnalyticsStatCard
-          label="Visitors"
-          value={currentData.stats.visitors}
-          change={currentData.stats.visitorsChange}
+          label="Total Visitors"
+          value={analyticsData.total_visitors}
+          change="+100%"
           icon={UsersIcon}
           accentColor="text-purple-400"
         />
         <AnalyticsStatCard
-          label="Project Views"
-          value={currentData.stats.projectViews}
-          change={currentData.stats.projectViewsChange}
+          label="Page Views"
+          value={analyticsData.total_views}
+          change="+100%"
           icon={EyeIcon}
           accentColor="text-sky-400"
         />
         <AnalyticsStatCard
           label="Certific. Views"
-          value={currentData.stats.certViews}
-          change={currentData.stats.certViewsChange}
+          value={analyticsData.total_views}
+          change="+100%"
           icon={AwardIcon}
           accentColor="text-emerald-400"
         />
         <AnalyticsStatCard
-          label="Contacts"
-          value={currentData.stats.contacts.toString().padStart(2, "0")}
-          change={currentData.stats.contactsChange}
+          label="Contacts Inquiries"
+          value={analyticsData.total_visitors}
+          change="+100%"
           icon={MailIcon}
           accentColor="text-amber-400"
         />
       </div>
 
-      {/* 3. TRAFFIC OVERVIEW CHART */}
-      <TrafficChart data={currentData.traffic} />
-
-      {/* 4. TOP PROJECTS & TOP PAGES RANKINGS */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <RankedList
-          title="TOP PROJECTS"
-          subtitle="Most viewed engineering showcases"
-          items={currentData.topProjects}
-        />
-        <RankedList
-          title="TOP PAGES"
-          subtitle="Direct and routed impressions"
-          items={currentData.topPages}
-        />
+      {/* 3. TOP PAGES RANKINGS */}
+      <div className="p-6 rounded-[var(--radius-lg)] border border-[var(--border-default)] bg-[var(--surface-card)] space-y-4 font-mono">
+        <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider">
+          LIVE TOP VISITED PATHS
+        </h3>
+        {analyticsData.top_pages.length === 0 ? (
+          <p className="text-xs text-[var(--text-muted)]">No telemetry visits logged yet. Visit pages on public site to track.</p>
+        ) : (
+          <div className="divide-y divide-[var(--border-subtle)] text-xs">
+            {analyticsData.top_pages.map((p, idx) => (
+              <div key={idx} className="py-2.5 flex items-center justify-between">
+                <span className="text-[var(--text-primary)]">{p.path}</span>
+                <span className="text-[var(--accent-primary)] font-bold">{p.views} views</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 }
+

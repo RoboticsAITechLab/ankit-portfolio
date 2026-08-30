@@ -35,11 +35,11 @@ export function AiLabManagementClient() {
           id: e.id,
           name: e.title,
           slug: e.title.toLowerCase().replace(/\s+/g, "-"),
-          tagline: e.tagline,
-          description: e.description,
-          category: e.model_type || "Autonomous Agents",
+          category: (e.model_type as any) || "Agents",
+          status: (e.status as any) || "Experiment",
+          shortDescription: e.tagline || e.description || "",
+          longDescription: e.description || "",
           technologies: ["PyTorch", "FastAPI", "VectorDB"],
-          status: e.status || "Experiment",
           updatedAt: new Date(e.updated_at || e.created_at).toISOString().split("T")[0],
         }));
         setExperiments(mapped);
@@ -107,8 +107,8 @@ export function AiLabManagementClient() {
     try {
       const payload = {
         title: savedExp.name,
-        tagline: savedExp.tagline,
-        description: savedExp.description,
+        tagline: savedExp.shortDescription,
+        description: savedExp.longDescription || savedExp.shortDescription,
         model_type: savedExp.category,
         status: savedExp.status,
         published: true,
@@ -120,11 +120,11 @@ export function AiLabManagementClient() {
           id: res.data.id,
           name: res.data.title,
           slug: res.data.title.toLowerCase().replace(/\s+/g, "-"),
-          tagline: res.data.tagline,
-          description: res.data.description,
-          category: res.data.model_type,
+          category: (res.data.model_type as any) || "Agents",
+          status: (res.data.status as any) || "Experiment",
+          shortDescription: res.data.tagline,
+          longDescription: res.data.description,
           technologies: ["PyTorch", "FastAPI", "VectorDB"],
-          status: res.data.status || "Experiment",
           updatedAt: new Date().toISOString().split("T")[0],
         };
         setExperiments((prev) => [mapped, ...prev]);
@@ -136,6 +136,7 @@ export function AiLabManagementClient() {
     setIsFormOpen(false);
     setEditingExp(null);
   };
+
 
   const handleOpenDelete = (exp: AdminAiExperiment) => {
     setExpToDelete(exp);

@@ -12,20 +12,18 @@ export function SettingsClient() {
     name: "Ankit Kumar",
     role: "AI & Full-Stack Engineer",
     email: "roboticsaitechlab@gmail.com",
-    avatar: "/profile.jpg",
   });
   const [links, setLinks] = React.useState<PortfolioLinks>({
     github: "https://github.com/RoboticsAITechLab",
     linkedin: "https://linkedin.com",
-    twitter: "https://x.com",
     portfolioUrl: "https://ankitkumar.dev",
   });
   const [preferences, setPreferences] = React.useState<SystemPreferences>({
     darkMode: true,
     emailNotifications: true,
     maintenanceMode: false,
-    analyticsTracking: true,
   });
+
 
   const [notification, setNotification] = React.useState<string | null>(null);
 

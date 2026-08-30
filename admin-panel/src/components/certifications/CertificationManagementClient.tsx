@@ -39,9 +39,10 @@ export function CertificationManagementClient() {
             issuer: c.issuer,
             issueDate: c.issue_date,
             year: parsedYear,
-            credentialId: c.credential_id || undefined,
-            badgeImage: c.badge_image || "/certificates/Advance AI Programmer Certificate.png",
+            credentialId: c.credential_id || "",
+            previewImage: c.badge_image || "/certificates/Advance AI Programmer Certificate.png",
             status: c.published ? "Published" : "Draft",
+            updatedAt: new Date(c.updated_at || c.created_at).toISOString().split("T")[0],
           };
         });
         setCertifications(mapped);
@@ -120,7 +121,7 @@ export function CertificationManagementClient() {
         issuer: savedCert.issuer,
         issue_date: String(savedCert.year || savedCert.issueDate),
         credential_id: savedCert.credentialId || null,
-        badge_image: savedCert.badgeImage || null,
+        badge_image: savedCert.previewImage || null,
         published: savedCert.status === "Published",
       };
 
@@ -132,9 +133,10 @@ export function CertificationManagementClient() {
           issuer: res.data.issuer,
           issueDate: res.data.issue_date,
           year: parseInt(res.data.issue_date, 10) || new Date().getFullYear(),
-          credentialId: res.data.credential_id || undefined,
-          badgeImage: res.data.badge_image || "/certificates/Advance AI Programmer Certificate.png",
+          credentialId: res.data.credential_id || "",
+          previewImage: res.data.badge_image || "/certificates/Advance AI Programmer Certificate.png",
           status: res.data.published ? "Published" : "Draft",
+          updatedAt: new Date().toISOString().split("T")[0],
         };
         setCertifications((prev) => [mapped, ...prev]);
       }
@@ -145,6 +147,7 @@ export function CertificationManagementClient() {
     setIsFormOpen(false);
     setEditingCert(null);
   };
+
 
   // Open Delete Confirmation
   const handleOpenDelete = (cert: AdminCertification) => {

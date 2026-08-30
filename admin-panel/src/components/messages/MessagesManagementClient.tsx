@@ -27,16 +27,20 @@ export function MessagesManagementClient() {
     try {
       const res = await getAdminMessages();
       if (res.success && Array.isArray(res.data)) {
-        // Map backend schema to AdminMessage format
-        const mapped: AdminMessage[] = res.data.map((m: any) => ({
-          id: m.id,
-          senderName: m.name,
-          senderEmail: m.email,
-          subject: m.subject || "No Subject",
-          message: m.message,
-          receivedAt: new Date(m.created_at).toISOString().split("T")[0],
-          status: m.is_archived ? "Archived" : m.is_read ? "Read" : "Unread",
-        }));
+        const mapped: AdminMessage[] = res.data.map((m: any) => {
+          const dateStr = new Date(m.created_at).toISOString().split("T")[0];
+          return {
+            id: m.id,
+            senderName: m.name,
+            senderEmail: m.email,
+            subject: m.subject || "No Subject",
+            message: m.message,
+            date: dateStr,
+            receivedAt: dateStr,
+            status: m.is_archived ? "Archived" : m.is_read ? "Read" : "Unread",
+            updatedAt: dateStr,
+          };
+        });
         setMessages(mapped);
       }
     } catch (err) {
@@ -45,6 +49,7 @@ export function MessagesManagementClient() {
       setIsLoading(false);
     }
   }, []);
+
 
   React.useEffect(() => {
     fetchMessages();
