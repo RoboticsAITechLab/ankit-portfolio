@@ -1,7 +1,8 @@
 import * as React from "react";
 import { Container } from "@/components/ui/Container";
 import { ProjectGrid } from "@/components/projects/ProjectGrid";
-import { projects } from "@/data/projects";
+import { getProjects } from "@/lib/api";
+import { projects as fallbackProjects } from "@/data/projects";
 
 export const metadata = {
   title: "Projects | Ankit Kumar - AI & Software Developer",
@@ -9,7 +10,29 @@ export const metadata = {
     "Explore production applications, full-stack systems, AI architectures, and backend pipelines engineered by Ankit Kumar.",
 };
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  let projectList = fallbackProjects;
+  try {
+    const res = await getProjects();
+    if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+      projectList = res.data.map((p: any) => ({
+        id: p.id,
+        slug: p.slug,
+        title: p.title,
+        category: p.category || "AI",
+        categoryTag: (p.category as any) || "AI",
+        description: p.description,
+        tags: p.technologies || [],
+        featured: p.featured,
+        githubUrl: p.github_url || undefined,
+        liveUrl: p.demo_url || undefined,
+        year: new Date(p.created_at || Date.now()).getFullYear().toString(),
+      }));
+    }
+  } catch (e) {
+    console.error("Failed to load projects from API, using fallback", e);
+  }
+
   return (
     <div className="flex flex-col w-full py-12 md:py-20 lg:py-24">
       <Container>
@@ -35,8 +58,9 @@ export default function ProjectsPage() {
         </header>
 
         {/* SECTION 2 & 3 — INTERACTIVE FILTERS & RESPONSIVE GRID */}
-        <ProjectGrid initialProjects={projects} />
+        <ProjectGrid initialProjects={projectList} />
       </Container>
     </div>
   );
 }
+

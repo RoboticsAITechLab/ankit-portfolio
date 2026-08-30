@@ -2,7 +2,8 @@ import * as React from "react";
 import { Container } from "@/components/ui/Container";
 import { AiSystemVisual } from "@/components/ai-lab/AiSystemVisual";
 import { AiExperimentGrid } from "@/components/ai-lab/AiExperimentGrid";
-import { aiExperiments } from "@/data/aiLab";
+import { getAiExperiments } from "@/lib/api";
+import { aiExperiments as fallbackExperiments } from "@/data/aiLab";
 import { Sparkles, FlaskConical } from "lucide-react";
 
 export const metadata = {
@@ -11,7 +12,27 @@ export const metadata = {
     "Explore experimental AI architectures, autonomous multi-agent systems, RAG retrieval engines, and machine learning prototypes by Ankit Kumar.",
 };
 
-export default function AiLabPage() {
+export default async function AiLabPage() {
+  let expList = fallbackExperiments;
+  try {
+    const res = await getAiExperiments();
+    if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+      expList = res.data.map((e: any, idx: number) => ({
+        id: e.id,
+        number: `0${idx + 1}`.slice(-2),
+        title: e.title,
+        subtitle: e.tagline,
+        description: e.description,
+        status: (e.status as any) || "Experiment",
+        technologies: ["PyTorch", "FastAPI", "VectorDB"],
+        slug: e.title.toLowerCase().replace(/\s+/g, "-"),
+      }));
+    }
+  } catch (err) {
+    console.error("Failed to load AI experiments from API, using fallback", err);
+  }
+
+
   return (
     <div className="flex flex-col w-full py-12 md:py-20 lg:py-24">
       <Container>
@@ -49,13 +70,14 @@ export default function AiLabPage() {
               </h2>
             </div>
             <span className="font-mono text-xs text-[var(--foreground-muted)]">
-              {aiExperiments.length} Active Prototyping Modules
+              {expList.length} Active Prototyping Modules
             </span>
           </div>
 
-          <AiExperimentGrid experiments={aiExperiments} />
+          <AiExperimentGrid experiments={expList} />
         </section>
       </Container>
     </div>
   );
 }
+

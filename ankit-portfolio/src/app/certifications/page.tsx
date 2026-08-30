@@ -1,7 +1,8 @@
 import * as React from "react";
 import { Container } from "@/components/ui/Container";
 import { CertificateYearSection } from "@/components/certifications/CertificateYearSection";
-import { certifications } from "@/data/certifications";
+import { getCertifications } from "@/lib/api";
+import { certifications as fallbackCerts } from "@/data/certifications";
 import { ShieldCheck } from "lucide-react";
 
 export const metadata = {
@@ -10,11 +11,35 @@ export const metadata = {
     "Explore verified technical certifications and credentials in AI, Python, Java, SQL, and Full-Stack development achieved by Ankit Kumar.",
 };
 
-export default function CertificationsPage() {
+export default async function CertificationsPage() {
+  let certList = fallbackCerts;
+  try {
+    const res = await getCertifications();
+    if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+      certList = res.data.map((c: any) => ({
+        id: c.id,
+        title: c.title,
+        issuer: c.issuer,
+        issueDate: c.issue_date,
+        year: parseInt(c.issue_date, 10) || new Date(c.created_at || Date.now()).getFullYear(),
+        credentialId: c.credential_id || "",
+        previewImage: c.badge_image || "/certificates/Advance AI Programmer Certificate.png",
+        file: c.credential_url || `/certificates/${c.title} Certificate.pdf`,
+        studentName: "Ankit Kumar",
+        studentId: "625059",
+        description: `Verified achievement in ${c.title}`,
+        skills: [c.category || "AI Systems"],
+      }));
+    }
+  } catch (e) {
+    console.error("Failed to load certifications from API, using fallback", e);
+  }
+
   // Extract unique years dynamically and sort descending (newest first)
   const uniqueYears = Array.from(
-    new Set(certifications.map((c) => c.year))
+    new Set(certList.map((c) => c.year))
   ).sort((a, b) => b - a);
+
 
   return (
     <div className="flex flex-col w-full py-12 md:py-20 lg:py-24">
@@ -43,7 +68,7 @@ export default function CertificationsPage() {
         {/* CHRONOLOGICAL YEAR SECTIONS */}
         <div className="space-y-16 md:space-y-24">
           {uniqueYears.map((year) => {
-            const yearCerts = certifications.filter((c) => c.year === year);
+            const yearCerts = certList.filter((c) => c.year === year);
 
             return (
               <CertificateYearSection
@@ -58,3 +83,4 @@ export default function CertificationsPage() {
     </div>
   );
 }
+

@@ -3,11 +3,35 @@ import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ProjectCard } from "@/components/projects/ProjectCard";
-import { projects } from "@/data/projects";
+import { getProjects } from "@/lib/api";
+import { projects as fallbackProjects } from "@/data/projects";
 import { ArrowRight } from "lucide-react";
 
-export function ProjectsSection() {
-  const featuredProjects = projects.filter((p) => p.featured).slice(0, 4);
+export async function ProjectsSection() {
+  let projectList = fallbackProjects;
+  try {
+    const res = await getProjects({ featured: true });
+    if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+      projectList = res.data.map((p: any) => ({
+        id: p.id,
+        slug: p.slug,
+        title: p.title,
+        category: p.category || "AI",
+        categoryTag: (p.category as any) || "AI",
+        description: p.description,
+        tags: p.technologies || [],
+        featured: p.featured,
+        githubUrl: p.github_url || undefined,
+        liveUrl: p.demo_url || undefined,
+        year: new Date(p.created_at || Date.now()).getFullYear().toString(),
+      }));
+    }
+  } catch (e) {
+    console.error("Failed to load projects from API, using fallback", e);
+  }
+
+  const featuredProjects = projectList.filter((p) => p.featured).slice(0, 4);
+
 
   return (
     <section id="projects" className="py-20 md:py-28 border-t border-[var(--border)]">
