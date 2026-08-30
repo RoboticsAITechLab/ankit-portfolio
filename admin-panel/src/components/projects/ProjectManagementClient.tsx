@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { AdminProject } from "@/types";
-import { initialProjects } from "@/data/projects";
+import { getAdminProjects, createAdminProject, deleteAdminProject } from "@/lib/api";
 import { ProjectFilters } from "@/components/projects/ProjectFilters";
 import { ProjectTable } from "@/components/projects/ProjectTable";
 import { ProjectForm } from "@/components/projects/ProjectForm";
@@ -12,7 +12,8 @@ import { Button } from "@/components/ui/Button";
 import { PlusIcon } from "@/components/ui/Icons";
 
 export function ProjectManagementClient() {
-  const [projects, setProjects] = React.useState<AdminProject[]>(initialProjects);
+  const [projects, setProjects] = React.useState<AdminProject[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState("All");
   const [selectedStatus, setSelectedStatus] = React.useState("All");
@@ -25,10 +26,38 @@ export function ProjectManagementClient() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
   const [projectToDelete, setProjectToDelete] = React.useState<AdminProject | null>(null);
 
+  const fetchProjects = React.useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await getAdminProjects();
+      if (res.success && Array.isArray(res.data)) {
+        const mapped: AdminProject[] = res.data.map((p: any) => ({
+          id: p.id,
+          slug: p.slug,
+          title: p.title,
+          description: p.description,
+          category: p.category,
+          technologies: p.technologies || [],
+          status: p.published ? "Published" : "Draft",
+          demoUrl: p.demo_url || undefined,
+          githubUrl: p.github_url || undefined,
+        }));
+        setProjects(mapped);
+      }
+    } catch (err) {
+      console.error("Failed to load projects", err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
+
   // Filter Projects Client-Side
   const filteredProjects = React.useMemo(() => {
     return projects.filter((project) => {
-      // 1. Search filter (title, category, technologies)
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
         const matchesTitle = project.title.toLowerCase().includes(q);
@@ -43,12 +72,10 @@ export function ProjectManagementClient() {
         }
       }
 
-      // 2. Category filter
       if (selectedCategory !== "All" && project.category !== selectedCategory) {
         return false;
       }
 
-      // 3. Status filter
       if (selectedStatus !== "All" && project.status !== selectedStatus) {
         return false;
       }
@@ -81,16 +108,37 @@ export function ProjectManagementClient() {
   };
 
   // Save Project (Add or Edit)
-  const handleSaveProject = (savedProject: AdminProject) => {
-    setProjects((prev) => {
-      const existsIndex = prev.findIndex((p) => p.id === savedProject.id);
-      if (existsIndex >= 0) {
-        const next = [...prev];
-        next[existsIndex] = savedProject;
-        return next;
+  const handleSaveProject = async (savedProject: AdminProject) => {
+    try {
+      const payload = {
+        slug: savedProject.slug,
+        title: savedProject.title,
+        description: savedProject.description,
+        category: savedProject.category,
+        technologies: savedProject.technologies,
+        github_url: savedProject.githubUrl || null,
+        demo_url: savedProject.demoUrl || null,
+        published: savedProject.status === "Published",
+      };
+
+      const res = await createAdminProject(payload);
+      if (res.success && res.data) {
+        const mapped: AdminProject = {
+          id: res.data.id,
+          slug: res.data.slug,
+          title: res.data.title,
+          description: res.data.description,
+          category: res.data.category,
+          technologies: res.data.technologies || [],
+          status: res.data.published ? "Published" : "Draft",
+          demoUrl: res.data.demo_url || undefined,
+          githubUrl: res.data.github_url || undefined,
+        };
+        setProjects((prev) => [mapped, ...prev]);
       }
-      return [savedProject, ...prev];
-    });
+    } catch (err) {
+      console.error("Failed to save project", err);
+    }
 
     setIsFormOpen(false);
     setEditingProject(null);
@@ -103,11 +151,13 @@ export function ProjectManagementClient() {
   };
 
   // Confirm Delete
-  const handleConfirmDelete = (projectId: string) => {
+  const handleConfirmDelete = async (projectId: string) => {
+    await deleteAdminProject(projectId);
     setProjects((prev) => prev.filter((p) => p.id !== projectId));
     setIsDeleteDialogOpen(false);
     setProjectToDelete(null);
   };
+
 
   // Toggle Status between Published and Draft
   const handleToggleStatus = (project: AdminProject) => {

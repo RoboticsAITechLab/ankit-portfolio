@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { AdminCertification } from "@/types";
-import { initialCertifications } from "@/data/certifications";
+import { getAdminCertifications, createAdminCertification, deleteAdminCertification } from "@/lib/api";
 import { CertificationFilters } from "@/components/certifications/CertificationFilters";
 import { CertificationTable } from "@/components/certifications/CertificationTable";
 import { CertificationForm } from "@/components/certifications/CertificationForm";
@@ -12,7 +12,8 @@ import { Button } from "@/components/ui/Button";
 import { PlusIcon } from "@/components/ui/Icons";
 
 export function CertificationManagementClient() {
-  const [certifications, setCertifications] = React.useState<AdminCertification[]>(initialCertifications);
+  const [certifications, setCertifications] = React.useState<AdminCertification[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedYear, setSelectedYear] = React.useState("All");
   const [selectedStatus, setSelectedStatus] = React.useState("All");
@@ -25,6 +26,37 @@ export function CertificationManagementClient() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
   const [certToDelete, setCertToDelete] = React.useState<AdminCertification | null>(null);
 
+  const fetchCertifications = React.useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await getAdminCertifications();
+      if (res.success && Array.isArray(res.data)) {
+        const mapped: AdminCertification[] = res.data.map((c: any) => {
+          const parsedYear = parseInt(c.issue_date, 10) || new Date(c.created_at).getFullYear();
+          return {
+            id: c.id,
+            title: c.title,
+            issuer: c.issuer,
+            issueDate: c.issue_date,
+            year: parsedYear,
+            credentialId: c.credential_id || undefined,
+            badgeImage: c.badge_image || "/certificates/Advance AI Programmer Certificate.png",
+            status: c.published ? "Published" : "Draft",
+          };
+        });
+        setCertifications(mapped);
+      }
+    } catch (err) {
+      console.error("Failed to load certifications", err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    fetchCertifications();
+  }, [fetchCertifications]);
+
   // Derive unique years dynamically from dataset
   const availableYears = React.useMemo(() => {
     const years = Array.from(new Set(certifications.map((c) => c.year)));
@@ -34,7 +66,6 @@ export function CertificationManagementClient() {
   // Filter Certifications Client-Side
   const filteredCertifications = React.useMemo(() => {
     return certifications.filter((cert) => {
-      // 1. Search Query (title, issuer, credentialId)
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
         const matchesTitle = cert.title.toLowerCase().includes(q);
@@ -46,12 +77,10 @@ export function CertificationManagementClient() {
         }
       }
 
-      // 2. Year Filter
       if (selectedYear !== "All" && cert.year.toString() !== selectedYear) {
         return false;
       }
 
-      // 3. Status Filter
       if (selectedStatus !== "All" && cert.status !== selectedStatus) {
         return false;
       }
@@ -84,16 +113,34 @@ export function CertificationManagementClient() {
   };
 
   // Save Certification (Add or Edit)
-  const handleSaveCert = (savedCert: AdminCertification) => {
-    setCertifications((prev) => {
-      const existsIndex = prev.findIndex((c) => c.id === savedCert.id);
-      if (existsIndex >= 0) {
-        const next = [...prev];
-        next[existsIndex] = savedCert;
-        return next;
+  const handleSaveCert = async (savedCert: AdminCertification) => {
+    try {
+      const payload = {
+        title: savedCert.title,
+        issuer: savedCert.issuer,
+        issue_date: String(savedCert.year || savedCert.issueDate),
+        credential_id: savedCert.credentialId || null,
+        badge_image: savedCert.badgeImage || null,
+        published: savedCert.status === "Published",
+      };
+
+      const res = await createAdminCertification(payload);
+      if (res.success && res.data) {
+        const mapped: AdminCertification = {
+          id: res.data.id,
+          title: res.data.title,
+          issuer: res.data.issuer,
+          issueDate: res.data.issue_date,
+          year: parseInt(res.data.issue_date, 10) || new Date().getFullYear(),
+          credentialId: res.data.credential_id || undefined,
+          badgeImage: res.data.badge_image || "/certificates/Advance AI Programmer Certificate.png",
+          status: res.data.published ? "Published" : "Draft",
+        };
+        setCertifications((prev) => [mapped, ...prev]);
       }
-      return [savedCert, ...prev];
-    });
+    } catch (err) {
+      console.error("Failed to save certification", err);
+    }
 
     setIsFormOpen(false);
     setEditingCert(null);
@@ -106,11 +153,13 @@ export function CertificationManagementClient() {
   };
 
   // Confirm Delete
-  const handleConfirmDelete = (certId: string) => {
+  const handleConfirmDelete = async (certId: string) => {
+    await deleteAdminCertification(certId);
     setCertifications((prev) => prev.filter((c) => c.id !== certId));
     setIsDeleteDialogOpen(false);
     setCertToDelete(null);
   };
+
 
   // Toggle Status between Published and Draft
   const handleToggleStatus = (cert: AdminCertification) => {

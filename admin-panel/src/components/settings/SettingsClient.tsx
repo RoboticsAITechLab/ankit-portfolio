@@ -2,21 +2,48 @@
 
 import * as React from "react";
 import { AdminProfile, PortfolioLinks, SystemPreferences } from "@/types";
-import {
-  initialProfile,
-  initialPortfolioLinks,
-  initialPreferences,
-} from "@/data/settings";
+import { getAdminSettings, updateAdminSettings } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 import { CheckIcon, UserIcon, ExternalLinkIcon, SettingsIcon } from "@/components/ui/Icons";
 import { cn } from "@/lib/utils";
 
 export function SettingsClient() {
-  const [profile, setProfile] = React.useState<AdminProfile>(initialProfile);
-  const [links, setLinks] = React.useState<PortfolioLinks>(initialPortfolioLinks);
-  const [preferences, setPreferences] = React.useState<SystemPreferences>(initialPreferences);
+  const [profile, setProfile] = React.useState<AdminProfile>({
+    name: "Ankit Kumar",
+    role: "AI & Full-Stack Engineer",
+    email: "roboticsaitechlab@gmail.com",
+    avatar: "/profile.jpg",
+  });
+  const [links, setLinks] = React.useState<PortfolioLinks>({
+    github: "https://github.com/RoboticsAITechLab",
+    linkedin: "https://linkedin.com",
+    twitter: "https://x.com",
+    portfolioUrl: "https://ankitkumar.dev",
+  });
+  const [preferences, setPreferences] = React.useState<SystemPreferences>({
+    darkMode: true,
+    emailNotifications: true,
+    maintenanceMode: false,
+    analyticsTracking: true,
+  });
 
   const [notification, setNotification] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    async function loadSettings() {
+      try {
+        const res = await getAdminSettings();
+        if (res.success && res.data) {
+          if (res.data.profile) setProfile(res.data.profile);
+          if (res.data.links) setLinks(res.data.links);
+          if (res.data.preferences) setPreferences(res.data.preferences);
+        }
+      } catch (err) {
+        console.error("Failed to load settings", err);
+      }
+    }
+    loadSettings();
+  }, []);
 
   const showFeedback = (msg: string) => {
     setNotification(msg);
@@ -25,20 +52,24 @@ export function SettingsClient() {
     }, 3500);
   };
 
-  const handleSaveProfile = (e: React.FormEvent) => {
+  const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    showFeedback("Profile details saved locally.");
+    await updateAdminSettings("profile", profile);
+    showFeedback("Profile details saved to database.");
   };
 
-  const handleSaveLinks = (e: React.FormEvent) => {
+  const handleSaveLinks = async (e: React.FormEvent) => {
     e.preventDefault();
-    showFeedback("Portfolio link endpoints updated locally.");
+    await updateAdminSettings("links", links);
+    showFeedback("Portfolio link endpoints updated in database.");
   };
 
-  const handleSavePreferences = (e: React.FormEvent) => {
+  const handleSavePreferences = async (e: React.FormEvent) => {
     e.preventDefault();
-    showFeedback("System preferences saved locally.");
+    await updateAdminSettings("preferences", preferences);
+    showFeedback("System preferences saved to database.");
   };
+
 
   return (
     <div className="w-full space-y-6">

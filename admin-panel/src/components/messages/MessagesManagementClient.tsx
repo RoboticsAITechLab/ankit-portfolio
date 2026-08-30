@@ -2,14 +2,15 @@
 
 import * as React from "react";
 import { AdminMessage } from "@/types";
-import { initialMessages } from "@/data/messages";
+import { getAdminMessages, markMessageAsRead, deleteAdminMessage } from "@/lib/api";
 import { MessageFilters } from "@/components/messages/MessageFilters";
 import { MessageTable } from "@/components/messages/MessageTable";
 import { MessageDetailModal } from "@/components/messages/MessageDetailModal";
 import { DeleteMessageDialog } from "@/components/messages/DeleteMessageDialog";
 
 export function MessagesManagementClient() {
-  const [messages, setMessages] = React.useState<AdminMessage[]>(initialMessages);
+  const [messages, setMessages] = React.useState<AdminMessage[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedStatus, setSelectedStatus] = React.useState("All");
 
@@ -21,10 +22,37 @@ export function MessagesManagementClient() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
   const [messageToDelete, setMessageToDelete] = React.useState<AdminMessage | null>(null);
 
+  const fetchMessages = React.useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await getAdminMessages();
+      if (res.success && Array.isArray(res.data)) {
+        // Map backend schema to AdminMessage format
+        const mapped: AdminMessage[] = res.data.map((m: any) => ({
+          id: m.id,
+          senderName: m.name,
+          senderEmail: m.email,
+          subject: m.subject || "No Subject",
+          message: m.message,
+          receivedAt: new Date(m.created_at).toISOString().split("T")[0],
+          status: m.is_archived ? "Archived" : m.is_read ? "Read" : "Unread",
+        }));
+        setMessages(mapped);
+      }
+    } catch (err) {
+      console.error("Failed to load messages", err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    fetchMessages();
+  }, [fetchMessages]);
+
   // Filter Messages
   const filteredMessages = React.useMemo(() => {
     return messages.filter((msg) => {
-      // 1. Search Query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
         const matchesSender = msg.senderName.toLowerCase().includes(q);
@@ -37,7 +65,6 @@ export function MessagesManagementClient() {
         }
       }
 
-      // 2. Status Filter
       if (selectedStatus !== "All" && msg.status !== selectedStatus) {
         return false;
       }
@@ -53,9 +80,9 @@ export function MessagesManagementClient() {
     setSelectedStatus("All");
   };
 
-  const handleViewMessage = (msg: AdminMessage) => {
-    // If opening unread message, mark as read automatically in UI
+  const handleViewMessage = async (msg: AdminMessage) => {
     if (msg.status === "Unread") {
+      await markMessageAsRead(msg.id);
       setMessages((prev) =>
         prev.map((m) => (m.id === msg.id ? { ...m, status: "Read" } : m))
       );
@@ -66,13 +93,12 @@ export function MessagesManagementClient() {
     setIsDetailOpen(true);
   };
 
-  const handleToggleRead = (msg: AdminMessage) => {
-    const nextStatus = msg.status === "Unread" ? "Read" : "Unread";
-    setMessages((prev) =>
-      prev.map((m) => (m.id === msg.id ? { ...m, status: nextStatus } : m))
-    );
-    if (selectedMessage?.id === msg.id) {
-      setSelectedMessage((prev) => prev ? { ...prev, status: nextStatus } : null);
+  const handleToggleRead = async (msg: AdminMessage) => {
+    if (msg.status === "Unread") {
+      await markMessageAsRead(msg.id);
+      setMessages((prev) =>
+        prev.map((m) => (m.id === msg.id ? { ...m, status: "Read" } : m))
+      );
     }
   };
 
@@ -81,9 +107,6 @@ export function MessagesManagementClient() {
     setMessages((prev) =>
       prev.map((m) => (m.id === msg.id ? { ...m, status: nextStatus } : m))
     );
-    if (selectedMessage?.id === msg.id) {
-      setSelectedMessage((prev) => prev ? { ...prev, status: nextStatus } : null);
-    }
   };
 
   const handleOpenDelete = (msg: AdminMessage) => {
@@ -91,7 +114,8 @@ export function MessagesManagementClient() {
     setIsDeleteDialogOpen(true);
   };
 
-  const handleConfirmDelete = (msgId: string) => {
+  const handleConfirmDelete = async (msgId: string) => {
+    await deleteAdminMessage(msgId);
     setMessages((prev) => prev.filter((m) => m.id !== msgId));
     setIsDeleteDialogOpen(false);
     setMessageToDelete(null);
@@ -100,6 +124,7 @@ export function MessagesManagementClient() {
       setSelectedMessage(null);
     }
   };
+
 
   return (
     <div className="w-full space-y-6">

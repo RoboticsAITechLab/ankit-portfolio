@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { TimeRange } from "@/types";
-import { analyticsDataByRange } from "@/data/analytics";
+import { getAdminAnalytics } from "@/lib/api";
 import { AnalyticsStatCard } from "@/components/analytics/AnalyticsStatCard";
 import { TrafficChart } from "@/components/analytics/TrafficChart";
 import { RankedList } from "@/components/analytics/RankedList";
@@ -18,8 +18,26 @@ const timeRanges: TimeRange[] = ["Today", "7 Days", "30 Days", "90 Days"];
 
 export function AnalyticsClient() {
   const [selectedRange, setSelectedRange] = React.useState<TimeRange>("30 Days");
+  const [analyticsData, setAnalyticsData] = React.useState({
+    total_views: 0,
+    total_visitors: 0,
+    top_pages: [] as { path: string; views: number }[],
+  });
 
-  const currentData = analyticsDataByRange[selectedRange];
+  React.useEffect(() => {
+    async function loadAnalytics() {
+      try {
+        const res = await getAdminAnalytics();
+        if (res.success && res.data) {
+          setAnalyticsData(res.data);
+        }
+      } catch (err) {
+        console.error("Failed to load analytics", err);
+      }
+    }
+    loadAnalytics();
+  }, []);
+
 
   return (
     <div className="w-full space-y-6">

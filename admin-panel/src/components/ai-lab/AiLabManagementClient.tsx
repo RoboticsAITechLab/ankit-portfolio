@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { AdminAiExperiment } from "@/types";
-import { initialAiExperiments } from "@/data/aiLab";
+import { getAdminAiExperiments, createAdminAiExperiment, deleteAdminAiExperiment } from "@/lib/api";
 import { AiExperimentFilters } from "@/components/ai-lab/AiExperimentFilters";
 import { AiExperimentTable } from "@/components/ai-lab/AiExperimentTable";
 import { AiExperimentForm } from "@/components/ai-lab/AiExperimentForm";
@@ -12,7 +12,8 @@ import { Button } from "@/components/ui/Button";
 import { PlusIcon } from "@/components/ui/Icons";
 
 export function AiLabManagementClient() {
-  const [experiments, setExperiments] = React.useState<AdminAiExperiment[]>(initialAiExperiments);
+  const [experiments, setExperiments] = React.useState<AdminAiExperiment[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState("All");
   const [selectedStatus, setSelectedStatus] = React.useState("All");
@@ -25,10 +26,38 @@ export function AiLabManagementClient() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
   const [expToDelete, setExpToDelete] = React.useState<AdminAiExperiment | null>(null);
 
+  const fetchExperiments = React.useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await getAdminAiExperiments();
+      if (res.success && Array.isArray(res.data)) {
+        const mapped: AdminAiExperiment[] = res.data.map((e: any) => ({
+          id: e.id,
+          name: e.title,
+          slug: e.title.toLowerCase().replace(/\s+/g, "-"),
+          tagline: e.tagline,
+          description: e.description,
+          category: e.model_type || "Autonomous Agents",
+          technologies: ["PyTorch", "FastAPI", "VectorDB"],
+          status: e.status || "Experiment",
+          updatedAt: new Date(e.updated_at || e.created_at).toISOString().split("T")[0],
+        }));
+        setExperiments(mapped);
+      }
+    } catch (err) {
+      console.error("Failed to load AI experiments", err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    fetchExperiments();
+  }, [fetchExperiments]);
+
   // Filter Experiments
   const filteredExperiments = React.useMemo(() => {
     return experiments.filter((exp) => {
-      // 1. Search Query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
         const matchesName = exp.name.toLowerCase().includes(q);
@@ -41,12 +70,10 @@ export function AiLabManagementClient() {
         }
       }
 
-      // 2. Category Filter
       if (selectedCategory !== "All" && exp.category !== selectedCategory) {
         return false;
       }
 
-      // 3. Status Filter
       if (selectedStatus !== "All" && exp.status !== selectedStatus) {
         return false;
       }
@@ -76,16 +103,35 @@ export function AiLabManagementClient() {
     setIsFormOpen(true);
   };
 
-  const handleSaveExp = (savedExp: AdminAiExperiment) => {
-    setExperiments((prev) => {
-      const idx = prev.findIndex((e) => e.id === savedExp.id);
-      if (idx >= 0) {
-        const next = [...prev];
-        next[idx] = savedExp;
-        return next;
+  const handleSaveExp = async (savedExp: AdminAiExperiment) => {
+    try {
+      const payload = {
+        title: savedExp.name,
+        tagline: savedExp.tagline,
+        description: savedExp.description,
+        model_type: savedExp.category,
+        status: savedExp.status,
+        published: true,
+      };
+
+      const res = await createAdminAiExperiment(payload);
+      if (res.success && res.data) {
+        const mapped: AdminAiExperiment = {
+          id: res.data.id,
+          name: res.data.title,
+          slug: res.data.title.toLowerCase().replace(/\s+/g, "-"),
+          tagline: res.data.tagline,
+          description: res.data.description,
+          category: res.data.model_type,
+          technologies: ["PyTorch", "FastAPI", "VectorDB"],
+          status: res.data.status || "Experiment",
+          updatedAt: new Date().toISOString().split("T")[0],
+        };
+        setExperiments((prev) => [mapped, ...prev]);
       }
-      return [savedExp, ...prev];
-    });
+    } catch (err) {
+      console.error("Failed to save experiment", err);
+    }
 
     setIsFormOpen(false);
     setEditingExp(null);
@@ -96,11 +142,13 @@ export function AiLabManagementClient() {
     setIsDeleteDialogOpen(true);
   };
 
-  const handleConfirmDelete = (expId: string) => {
+  const handleConfirmDelete = async (expId: string) => {
+    await deleteAdminAiExperiment(expId);
     setExperiments((prev) => prev.filter((e) => e.id !== expId));
     setIsDeleteDialogOpen(false);
     setExpToDelete(null);
   };
+
 
   const handleToggleStatus = (exp: AdminAiExperiment) => {
     const nextStatus = exp.status === "Production-Ready" ? "Experiment" : "Production-Ready";
