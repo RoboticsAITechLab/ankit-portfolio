@@ -4,6 +4,8 @@ import * as React from "react";
 import { Button } from "@/components/ui/Button";
 import { Send, CheckCircle2, AlertCircle, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { sendContactMessage } from "@/lib/api";
+
 
 interface FormState {
   name: string;
@@ -69,20 +71,39 @@ export function ContactForm() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!validate()) {
       return;
     }
 
+
     setIsSubmitting(true);
 
-    // Simulate brief client-side validation transition
-    setTimeout(() => {
+    try {
+      const response = await sendContactMessage({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        subject: formData.subject.trim() || undefined,
+        message: formData.message.trim(),
+      });
+
       setIsSubmitting(false);
-      setIsSubmitted(true);
-    }, 600);
+
+      if (response.success) {
+        setIsSubmitted(true);
+      } else {
+        setErrors({
+          message: response.message || "Failed to deliver message. Please try again.",
+        });
+      }
+    } catch (_err) {
+      setIsSubmitting(false);
+      setErrors({
+        message: "Network error. Unable to connect to the backend server.",
+      });
+    }
   };
 
   const handleReset = () => {
@@ -99,11 +120,11 @@ export function ContactForm() {
         </div>
 
         <h3 className="font-mono text-xl sm:text-2xl font-bold text-[var(--foreground)] mb-2">
-          Message Prepared Successfully
+          Message Sent Successfully
         </h3>
 
         <p className="text-sm sm:text-base text-[var(--foreground-secondary)] max-w-md mb-6 leading-relaxed">
-          Thanks <strong className="text-[var(--foreground)]">{formData.name}</strong> — your message draft has been structured. (Frontend demo mode: backend transmission pending implementation).
+          Thanks <strong className="text-[var(--foreground)]">{formData.name}</strong> — your message has been received by Ankit Kumar. We will review and follow up shortly.
         </p>
 
         <div className="p-4 rounded-[var(--radius-md)] bg-[var(--surface)] border border-[var(--border)] font-mono text-xs text-left w-full max-w-md mb-6 space-y-1 text-[var(--foreground-muted)]">
@@ -126,6 +147,7 @@ export function ContactForm() {
       </div>
     );
   }
+
 
   return (
     <div className="rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8 md:p-10 shadow-lg">

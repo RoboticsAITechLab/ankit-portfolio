@@ -4,17 +4,18 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { AlertTriangleIcon, CheckIcon, ShieldIcon } from "@/components/ui/Icons";
+import { adminLogin, setAuthToken } from "@/lib/api";
 
 export function LoginForm() {
   const router = useRouter();
 
-  const [email, setEmail] = React.useState("roboticsaitechlab@gmail.com");
-  const [password, setPassword] = React.useState("••••••••••••");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -36,15 +37,23 @@ export function LoginForm() {
 
     setIsLoading(true);
 
-    // Simulate authentication processing
-    setTimeout(() => {
+    try {
+      const response = await adminLogin(email.trim(), password.trim());
       setIsLoading(false);
-      setIsSuccess(true);
 
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 700);
-    }, 1000);
+      if (response.success && response.data?.token) {
+        setAuthToken(response.data.token);
+        setIsSuccess(true);
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 500);
+      } else {
+        setError(response.message || "Invalid email or password.");
+      }
+    } catch (_err) {
+      setIsLoading(false);
+      setError("Failed to connect to backend server.");
+    }
   };
 
   return (
@@ -133,14 +142,7 @@ export function LoginForm() {
           </Button>
         </div>
       </form>
-
-      {/* Demo Notice */}
-      <div className="pt-4 border-t border-[var(--border-subtle)] text-center font-mono text-[11px] text-[var(--text-muted)]">
-        <p>Demo authentication will be connected to backend later.</p>
-        <p className="mt-1 text-[10px] text-[var(--text-disabled)]">
-          Any valid email/password passes simulation.
-        </p>
-      </div>
     </div>
   );
 }
+
