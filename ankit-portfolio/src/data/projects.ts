@@ -2,6 +2,72 @@ import { Project } from "@/types";
 
 export const projects: Project[] = [
   {
+    id: "exjet-luxury-aviation",
+    slug: "exjet-luxury-aviation",
+    title: "EXJET Ultra-Luxury Aviation",
+    category: "Full-Stack / UI",
+    categoryTag: "Full-Stack",
+    description:
+      "Ultra-luxury executive aviation web experience featuring instant jet charter calculation, interactive fleet showcase, 3D cabin visualizer, and live radar tracking.",
+    leadDescription:
+      "A flagship luxury aviation web platform crafted with rich gold/obsidian design aesthetics, live dynamic charter pricing engine, interactive cabin suite customizer, and real-time flight route simulation.",
+    tags: ["HTML5", "CSS3", "JavaScript (ES6+)", "Glassmorphism", "Canvas", "UI/UX"],
+    featured: true,
+    caseStudyUrl: "/typography/index.html",
+    liveUrl: "/typography/index.html",
+    githubUrl: "https://github.com/RoboticsAITechLab",
+    year: "2025",
+    overview: {
+      problem:
+        "Traditional executive aviation websites lack interactive booking estimation, custom VIP cabin previews, and dynamic real-time radar visualizers.",
+      solution:
+        "Designed and implemented an ultra-premium executive jet portal with instant distance/pricing calculators, interactive VIP suite previewer, empty-leg notifications, and high-performance glassmorphism aesthetics.",
+    },
+    architecture: {
+      summary:
+        "Interactive HTML5/CSS3/ES6 web experience running smoothly across devices with Canvas dynamic rendering and custom DOM event buses.",
+      nodes: [
+        { name: "CLIENT", role: "Browser UI & Micro-animations", tech: "HTML5 / Vanilla CSS" },
+        { name: "ENGINE", role: "Charter Calculator & Fleet Selector", tech: "JavaScript ES6+" },
+        { name: "RADAR", role: "Route Simulation & Canvas Render", tech: "HTML5 Canvas" },
+      ],
+    },
+    features: [
+      {
+        number: "01",
+        title: "Instant Flight Calculator",
+        description: "Dynamic distance estimation and instant jet charter cost breakdown across globally selected city pairs.",
+      },
+      {
+        number: "02",
+        title: "Interactive VIP Cabin Suite",
+        description: "Customizer allow clients to switch lighting schemes, wood veneers, and leather finishes live.",
+      },
+      {
+        number: "03",
+        title: "Live Global Radar Simulation",
+        description: "HTML5 Canvas animation displaying active executive jet routes in real-time.",
+      },
+      {
+        number: "04",
+        title: "Empty Legs Deal Finder",
+        description: "Curated instant bookings for discounted global positioning flights with countdown timers.",
+      },
+    ],
+    implementation: [
+      {
+        title: "Luxury Design System",
+        description:
+          "Custom dark obsidian and metallic gold visual language with subtle glassmorphism and micro-animations.",
+        highlight: "Built entirely responsive without framework dependencies for maximum rendering speed.",
+      },
+    ],
+    results: [
+      "Integrated directly into portfolio with zero latency static asset serving.",
+      "Delivered a WOW experience with dynamic flight estimation and interactive cabin customizer.",
+    ],
+  },
+  {
     id: "neurosearch-rag",
     slug: "neurosearch-enterprise-rag",
     title: "NeuroSearch RAG Platform",

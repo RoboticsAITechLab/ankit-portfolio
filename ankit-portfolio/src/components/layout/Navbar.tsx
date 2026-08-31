@@ -12,6 +12,7 @@ const navLinks = [
   { name: "Home", href: "/" },
   { name: "About", href: "/about" },
   { name: "Projects", href: "/projects" },
+  { name: "EXJET UI", href: "/typography" },
   { name: "Certifications", href: "/certifications" },
   { name: "AI Lab", href: "/ai-lab" },
   { name: "Contact", href: "/contact" },

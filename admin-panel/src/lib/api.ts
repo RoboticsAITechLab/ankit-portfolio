@@ -24,6 +24,8 @@ export function removeAuthToken(): void {
   }
 }
 
+
+
 export async function adminFetch<T = any>(
   endpoint: string,
   options: RequestInit = {}
@@ -162,3 +164,4 @@ export async function updateAdminSettings(key: string, value: any) {
     body: JSON.stringify({ value }),
   });
 }
+

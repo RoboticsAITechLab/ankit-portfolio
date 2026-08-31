@@ -26,3 +26,4 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
+

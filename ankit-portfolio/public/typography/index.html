@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en" data-scroll-behavior="smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EXJET | Ultra-Luxury Executive Jet Charter & Aviation</title>
+  <meta name="description" content="Experience seamless global executive aviation with EXJET. Bespoke private jet charters, ultra long-range fleets, instant charter calculation, and VIP cabin customization.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Top Gold Scroll Progress Bar -->
+  <div class="scroll-progress-bar" id="scrollProgress"></div>
+
+  <!-- Top Navigation Bar -->
+  <nav class="navbar" id="navbar">
+    <div class="container nav-container">
+      <a href="#" class="brand-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 2L11 13"></path>
+          <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+        </svg>
+        <span class="brand-title">EX<span>JET</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#charter" class="nav-link active">Charter</a></li>
+        <li><a href="#fleet" class="nav-link">Executive Fleet</a></li>
+        <li><a href="#customizer" class="nav-link">Cabin Suite</a></li>
+        <li><a href="#radar" class="nav-link">Global Routes</a></li>
+        <li><a href="#emptylegs" class="nav-link">Empty Legs</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="#charter" class="btn btn-outline btn-sm">Estimate Flight</a>
+        <button class="btn btn-gold btn-sm" onclick="openModal('G700 Flagship')">Book Jet</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Hero Section -->
+  <header class="hero" id="charter">
+    <div class="hero-bg-wrapper">
+      <img src="assets/hero_jet.jpg" alt="EXJET Flagship Executive Aircraft" class="hero-bg-img">
+      <div class="hero-overlay"></div>
+    </div>
+
+    <div class="container hero-content">
+      <div class="hero-badge reveal-blur">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="12 8 8 16 16 16"></polygon>
+        </svg>
+        World-Class Aviation Standard • ARG/US Platinum Certified
+      </div>
+
+      <h1 class="heading-xl reveal-blur delay-1">
+        Command the Skies.<br>
+        <span class="text-gold">Bespoke Private Charter.</span>
+      </h1>
+
+      <p class="subheading reveal-blur delay-2" style="margin-top: 1rem;">
+        Unrivaled privacy, global range, and supreme luxury. Access over 4,200 executive airports worldwide with instant dispatch guaranteed.
+      </p>
+
+      <!-- Instant Flight Search & Estimator Widget -->
+      <div class="search-widget reveal-spring delay-3">
+        <div class="search-tabs">
+          <button class="search-tab active" data-trip="one-way">One-Way Charter</button>
+          <button class="search-tab" data-trip="round-trip">Round Trip</button>
+          <button class="search-tab" data-trip="multi-city">Multi-Leg Expedition</button>
+        </div>
+
+        <form id="searchForm" onsubmit="event.preventDefault(); calculateRouteQuote();">
+          <div class="search-grid">
+            <div class="input-group">
+              <label class="input-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
+                Origin Airport
+              </label>
+              <select class="custom-select" id="originSelect">
+                <option value="TEB">New York (Teterboro - TEB)</option>
+                <option value="FAB">London (Farnborough - FAB)</option>
+                <option value="LBG">Paris (Le Bourget - LBG)</option>
+                <option value="DWC">Dubai (Al Maktoum - DWC)</option>
+                <option value="HND">Tokyo (Haneda VIP - HND)</option>
+                <option value="ASE">Aspen (Pitkin County - ASE)</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
+                Destination
+              </label>
+              <select class="custom-select" id="destSelect">
+                <option value="DWC">Dubai (Al Maktoum - DWC)</option>
+                <option value="TEB">New York (Teterboro - TEB)</option>
+                <option value="FAB">London (Farnborough - FAB)</option>
+                <option value="LBG">Paris (Le Bourget - LBG)</option>
+                <option value="NCE">Nice / Monaco (Côte d'Azur - NCE)</option>
+                <option value="HND">Tokyo (Haneda VIP - HND)</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Departure Date
+              </label>
+              <input type="date" class="custom-input" id="flightDate" value="2026-09-05">
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Passengers
+              </label>
+              <select class="custom-select" id="passengerCount">
+                <option value="2">2 VIP Guests</option>
+                <option value="4" selected>4 VIP Guests</option>
+                <option value="8">8 VIP Guests</option>
+                <option value="14">14 VIP Guests (Full Cabin)</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-gold" style="height: 48px;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Search Flights
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Quick Stats Footer Bar -->
+      <div class="hero-stats">
+        <div class="stat-card">
+          <span class="stat-val" id="statAirports">4,200+</span>
+          <span class="stat-lbl">Global VIP Terminals</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">180+</span>
+          <span class="stat-lbl">Curated Heavy Jets</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">99.8%</span>
+          <span class="stat-lbl">On-Time Dispatch Rate</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">15,000+</span>
+          <span class="stat-lbl">Global Hours Flown</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Executive Fleet Showcase -->
+  <section class="fleet-section" id="fleet">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Flagship Airframes</span>
+        <h2 class="heading-lg">The EXJET Executive Fleet</h2>
+        <p class="subheading" style="margin: 0.5rem auto 0;">
+          Engineered for supreme comfort, intercontinental non-stop range, and whispering cabin acoustics.
+        </p>
+      </div>
+
+      <!-- Fleet Category Filter -->
+      <div class="fleet-filter-bar reveal delay-1">
+        <button class="filter-btn active" data-category="all">All Aircraft</button>
+        <button class="filter-btn" data-category="ultra-long">Ultra Long-Range</button>
+        <button class="filter-btn" data-category="heavy">Heavy Executive Jets</button>
+        <button class="filter-btn" data-category="super-mid">Super Midsize</button>
+      </div>
+
+      <!-- Fleet Grid -->
+      <div class="fleet-grid" id="fleetGrid">
+        <!-- Dynamically Rendered via app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Cabin Customizer Section -->
+  <section class="customizer-section" id="customizer">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Personalized Luxury</span>
+        <h2 class="heading-lg">Configure Your In-Flight Sanctuary</h2>
+        <p class="subheading" style="margin: 0.5rem auto 0;">
+          Tailor every detail of your airborne experience, from Michelin-starred catering to high-speed satellite connectivity.
+        </p>
+      </div>
+
+      <div class="customizer-grid">
+        <!-- Live Preview Card -->
+        <div class="customizer-preview glass-panel reveal-left delay-1">
+          <img src="assets/cabin_luxury.jpg" alt="EXJET Luxury Cabin Suite" class="preview-img">
+          <div class="preview-overlay">
+            <h3 class="font-serif" style="font-size: 1.5rem; color: var(--gold-primary);">Customized VIP Suite</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Estimated Cabin Upgrade Addon: <strong id="customizerPrice" style="color: #FFF;">+$1,850</strong></p>
+            <div class="amenity-pills" id="activePills">
+              <!-- Dynamically populated pills -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Options Controls -->
+        <div class="customizer-controls reveal-right delay-2">
+          <div class="options-group">
+            <h4 class="group-title">1. Dining & Sommelier Selection</h4>
+            <div class="options-grid">
+              <div class="opt-card selected" onclick="toggleOption(this, 'Michelin Tasting Menu', 1200)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <div class="opt-info">
+                  <span class="opt-name">Michelin 3-Course</span>
+                  <span class="opt-price">+$1,200</span>
+                </div>
+              </div>
+              <div class="opt-card selected" onclick="toggleOption(this, 'Dom Pérignon Vintage', 650)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 22h8M12 11v11M12 2a5 5 0 0 0-5 5c0 3 2.5 4 5 4s5-1 5-4a5 5 0 0 0-5-5z"/></svg>
+                <div class="opt-info">
+                  <span class="opt-name">Dom Pérignon Sommelier</span>
+                  <span class="opt-price">+$650</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="options-group">
+            <h4 class="group-title">2. In-Flight Tech & Connectivity</h4>
+            <div class="options-grid">
+              <div class="opt-card selected" onclick="toggleOption(this, 'Starlink Ultra-Fast Wi-Fi', 450)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+                <div class="opt-info">
+                  <span class="opt-name">Starlink High-Speed Wi-Fi</span>
+                  <span class="opt-price">+$450</span>
+                </div>
+              </div>
+              <div class="opt-card" onclick="toggleOption(this, 'Encrypted Comm Suite', 800)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <div class="opt-info">
+                  <span class="opt-name">Military-Grade Encryption</span>
+                  <span class="opt-price">+$800</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="options-group">
+            <h4 class="group-title">3. VIP Concierge & Security</h4>
+            <div class="options-grid">
+              <div class="opt-card" onclick="toggleOption(this, 'Tarmac Chauffeur Transfer', 500)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                <div class="opt-info">
+                  <span class="opt-name">Maybach Tarmac Transfer</span>
+                  <span class="opt-price">+$500</span>
+                </div>
+              </div>
+              <div class="opt-card" onclick="toggleOption(this, 'Close Protection Security', 1500)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <div class="opt-info">
+                  <span class="opt-name">Armed Executive Protection</span>
+                  <span class="opt-price">+$1,500</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Global Route Radar canvas section -->
+  <section class="radar-section" id="radar">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Global Flight Network</span>
+        <h2 class="heading-lg">Live Flight Corridor Radar</h2>
+        <p class="subheading" style="margin: 0.5rem auto 0;">
+          Real-time visualization of active EXJET intercontinental flight tracks connecting major global financial & resort capitals.
+        </p>
+      </div>
+
+      <div class="radar-wrapper reveal-scale delay-1">
+        <canvas id="routeCanvas"></canvas>
+        
+        <div class="radar-overlay-info">
+          <h4 class="radar-title">Transatlantic Express Corridor</h4>
+          <p class="radar-desc">Active Jet: Gulfstream G700 • TEB -> FAB</p>
+          <div style="margin-top: 0.5rem; display: flex; gap: 1rem; font-size: 0.8rem; color: var(--gold-primary);">
+            <span>Speed: Mach 0.90</span>
+            <span>Altitude: 47,000 ft</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Empty Leg Deals Banner -->
+  <section class="empty-leg-section" id="emptylegs">
+    <div class="container">
+      <div class="empty-leg-banner reveal-scale">
+        <div class="empty-leg-content">
+          <span class="section-tag" style="color: #07090E; font-weight: 800; background: var(--gold-gradient); padding: 0.2rem 0.6rem; border-radius: 4px;">Exclusive Access</span>
+          <h3 style="margin-top: 0.5rem;">EXJET Empty Leg Privilege Club</h3>
+          <p style="color: var(--text-muted); max-width: 550px;">
+            Save up to 65% on one-way repositioning flights aboard ultra-luxury aircraft. Updated live daily.
+          </p>
+        </div>
+        <button class="btn btn-gold" onclick="openModal('Empty Leg Club Access')">View Today's Empty Legs</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Typography Studio Horizontal Brand Identity Showcase Section -->
+  <section class="studio-section" id="studio">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Bespoke Design & Craft</span>
+        <h2 class="heading-lg">Typography Studio Case Studies</h2>
+        <p class="subheading" style="margin: 0.5rem auto 0;">
+          Crafting timeless brand identities, custom typography marks, and luxury visual environments inspired by Paramvir Jakhar's 14-year design legacy.
+        </p>
+      </div>
+    </div>
+
+    <!-- Pinned Horizontal Scroll Wrapper -->
+    <div class="horizontal-scroll-container" id="horizontalContainer">
+      <div class="horizontal-track" id="horizontalTrack">
+        
+        <div class="studio-card glass-panel">
+          <div class="studio-card-img-wrapper">
+            <img src="assets/hero_jet.jpg" alt="Paramvir Logo Book 2025" class="studio-card-img">
+            <span class="studio-tag">Brand Mark System</span>
+          </div>
+          <div class="studio-card-body">
+            <h3 class="font-serif">Paramvir's Logo Book 2025</h3>
+            <p>Monolithic emblem design, custom monogram craft, and luxury corporate iconography.</p>
+            <a href="#" class="studio-link" onclick="event.preventDefault(); openModal('Case Study: Logo Book 2025');">Explore Identity →</a>
+          </div>
+        </div>
+
+        <div class="studio-card glass-panel">
+          <div class="studio-card-img-wrapper">
+            <img src="assets/cabin_luxury.jpg" alt="Cropwares Sustainable Luxury" class="studio-card-img">
+            <span class="studio-tag">Eco Crafted Identity</span>
+          </div>
+          <div class="studio-card-body">
+            <h3 class="font-serif">Cropwares — Eco Luxury</h3>
+            <p>Earthy gold and organic olive color library paired with bespoke sustainable packaging.</p>
+            <a href="#" class="studio-link" onclick="event.preventDefault(); openModal('Case Study: Cropwares');">Explore Identity →</a>
+          </div>
+        </div>
+
+        <div class="studio-card glass-panel">
+          <div class="studio-card-img-wrapper">
+            <img src="assets/hero_jet.jpg" alt="Vasttu Construction Branding" class="studio-card-img">
+            <span class="studio-tag">Architectural Identity</span>
+          </div>
+          <div class="studio-card-body">
+            <h3 class="font-serif">Vasttu Construction</h3>
+            <p>Symbolic identity design for high-rise architectural engineering and executive developments.</p>
+            <a href="#" class="studio-link" onclick="event.preventDefault(); openModal('Case Study: Vasttu');">Explore Identity →</a>
+          </div>
+        </div>
+
+        <div class="studio-card glass-panel">
+          <div class="studio-card-img-wrapper">
+            <img src="assets/cabin_luxury.jpg" alt="Taxmann AI Identity" class="studio-card-img">
+            <span class="studio-tag">AI Tech Identity</span>
+          </div>
+          <div class="studio-card-body">
+            <h3 class="font-serif">Taxmann.AI Brand</h3>
+            <p>High-contrast futuristic identity system designed for next-generation intelligence tools.</p>
+            <a href="#" class="studio-link" onclick="event.preventDefault(); openModal('Case Study: Taxmann.AI');">Explore Identity →</a>
+          </div>
+        </div>
+
+        <div class="studio-card glass-panel">
+          <div class="studio-card-img-wrapper">
+            <img src="assets/hero_jet.jpg" alt="ReBridge Brand Identity" class="studio-card-img">
+            <span class="studio-tag">Corporate Identity</span>
+          </div>
+          <div class="studio-card-body">
+            <h3 class="font-serif">ReBridge Global</h3>
+            <p>Modern corporate restructuring identity with sleek geometric typography and visual guidelines.</p>
+            <a href="#" class="studio-link" onclick="event.preventDefault(); openModal('Case Study: ReBridge');">Explore Identity →</a>
+          </div>
+        </div>
+
+        <div class="studio-card glass-panel">
+          <div class="studio-card-img-wrapper">
+            <img src="assets/cabin_luxury.jpg" alt="AIRA Brand Identity" class="studio-card-img">
+            <span class="studio-tag">Aero Intelligence</span>
+          </div>
+          <div class="studio-card-body">
+            <h3 class="font-serif">AIRA Aviation Identity</h3>
+            <p>Bespoke typography mark and flight suite identity for autonomous sky mobility.</p>
+            <a href="#" class="studio-link" onclick="event.preventDefault(); openModal('Case Study: AIRA');">Explore Identity →</a>
+          </div>
+        </div>
+
+        <div class="studio-card glass-panel">
+          <div class="studio-card-img-wrapper">
+            <img src="assets/hero_jet.jpg" alt="Koala Kiss Honey Packaging" class="studio-card-img">
+            <span class="studio-tag">Luxury Packaging</span>
+          </div>
+          <div class="studio-card-body">
+            <h3 class="font-serif">Koala Kiss Organic Honey</h3>
+            <p>Premium glass bottle structural design, gold foil embossing, and unboxing ritual.</p>
+            <a href="#" class="studio-link" onclick="event.preventDefault(); openModal('Case Study: Koala Kiss');">Explore Identity →</a>
+          </div>
+        </div>
+
+        <div class="studio-card glass-panel">
+          <div class="studio-card-img-wrapper">
+            <img src="assets/cabin_luxury.jpg" alt="EXJET Fleet Livery Design" class="studio-card-img">
+            <span class="studio-tag">Aviation Livery Craft</span>
+          </div>
+          <div class="studio-card-body">
+            <h3 class="font-serif">EXJET Livery & Book</h3>
+            <p>Custom aircraft exterior livery design, official executive stamp, and VIP cabin brand book.</p>
+            <a href="#" class="studio-link" onclick="event.preventDefault(); openModal('Case Study: EXJET Livery');">Explore Identity →</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Typography Studio Font Lab Section -->
+  <section class="font-lab-section" id="font-lab">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Interactive Typography Studio</span>
+        <h2 class="heading-lg">Executive Type Specimen Lab</h2>
+        <p class="subheading" style="margin: 0.5rem auto 0;">
+          Test, inspect, and customize luxury font pairings, kerning, and gold gradient text styling in real-time.
+        </p>
+      </div>
+
+      <div class="font-lab-grid glass-panel reveal-scale">
+        <div class="font-lab-controls">
+          <div class="lab-control-group">
+            <label class="input-label">Select Font Family</label>
+            <select class="custom-select" id="fontFamilySelect" onchange="updateTypeSpecimen()">
+              <option value="'Cinzel', serif">Cinzel (Luxury Serif)</option>
+              <option value="'Syne', sans-serif">Syne (High-Fashion Display)</option>
+              <option value="'Plus Jakarta Sans', sans-serif">Plus Jakarta Sans (Modern Sans)</option>
+            </select>
+          </div>
+
+          <div class="lab-control-group">
+            <label class="input-label">Font Size (<span id="fontSizeVal">48px</span>)</label>
+            <input type="range" min="24" max="96" value="48" class="custom-range" id="fontSizeRange" oninput="updateTypeSpecimen()">
+          </div>
+
+          <div class="lab-control-group">
+            <label class="input-label">Letter Spacing (<span id="letterSpacingVal">0.05em</span>)</label>
+            <input type="range" min="-0.05" max="0.3" step="0.01" value="0.05" class="custom-range" id="spacingRange" oninput="updateTypeSpecimen()">
+          </div>
+
+          <div class="lab-control-group" style="display: flex; gap: 1rem; align-items: center;">
+            <label class="input-label" style="margin-bottom: 0;">Gold Gradient Text</label>
+            <input type="checkbox" id="gradientToggle" checked onchange="updateTypeSpecimen()" style="width: 20px; height: 20px; accent-color: var(--gold-primary); cursor: pointer;">
+          </div>
+
+          <button class="btn btn-outline btn-sm" onclick="copyTypeSpecimenCSS()" style="margin-top: 1rem;">
+            Copy CSS Snippet
+          </button>
+        </div>
+
+        <div class="font-lab-preview">
+          <div class="type-specimen-display text-gold" id="specimenText" contenteditable="true" spellcheck="false">
+            EXJET AVIATION
+          </div>
+          <div class="specimen-meta">
+            <span id="specimenMetaFont">Family: Cinzel</span> • <span id="specimenMetaSize">48px</span> • <span id="specimenMetaSpacing">0.05em</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive JetCard VIP Membership Calculator Section -->
+  <section class="membership-section" id="membership">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">VIP JetCard Privilege</span>
+        <h2 class="heading-lg">JetCard Membership Calculator</h2>
+        <p class="subheading" style="margin: 0.5rem auto 0;">
+          Unlock guaranteed aircraft availability, locked-in hourly rates, and zero repositioning fees worldwide.
+        </p>
+      </div>
+
+      <div class="membership-calc-wrapper glass-panel reveal-scale">
+        <div class="calc-slider-box">
+          <label class="input-label" style="font-size: 1rem;">Annual Flight Hours Target: <strong id="hoursDisplay" style="color: var(--gold-primary); font-size: 1.3rem;">50 Hours</strong></label>
+          <input type="range" min="25" max="250" step="25" value="50" class="custom-range" id="membershipHoursRange" oninput="updateMembershipCalculator()">
+        </div>
+
+        <div class="membership-tier-grid">
+          <div class="tier-card" id="tierSilver">
+            <span class="tier-badge">Executive Silver</span>
+            <h4 class="tier-price">$275,000</h4>
+            <p class="tier-desc">25 Hours Included • 24hr Notice</p>
+            <ul class="tier-features">
+              <li>✓ Guaranteed Heavy Jet Access</li>
+              <li>✓ Fixed Hourly Rates</li>
+              <li>✓ Complimentary Wi-Fi</li>
+            </ul>
+          </div>
+
+          <div class="tier-card active-tier" id="tierGold">
+            <span class="tier-badge" style="background: var(--gold-gradient); color: #07090E;">Gold JetCard (Recommended)</span>
+            <h4 class="tier-price" style="color: var(--gold-primary);">$525,000</h4>
+            <p class="tier-desc">50 Hours Included • 12hr Notice</p>
+            <ul class="tier-features">
+              <li>✓ Ultra Long-Range Flagship Access</li>
+              <li>✓ 15% Hourly Rate Discount</li>
+              <li>✓ Michelin In-Flight Catering Included</li>
+              <li>✓ Zero Peak Day Surcharges</li>
+            </ul>
+          </div>
+
+          <div class="tier-card" id="tierPlatinum">
+            <span class="tier-badge">Platinum VIP Club</span>
+            <h4 class="tier-price">$1,020,000</h4>
+            <p class="tier-desc">100+ Hours Included • 4hr Notice</p>
+            <ul class="tier-features">
+              <li>✓ Full Fleet Priority Dispatch</li>
+              <li>✓ Dedicated Flight Operations Desk</li>
+              <li>✓ Complimentary Helicopter Tarmac Transfers</li>
+              <li>✓ Unlimited Empty Leg Access</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3D Cabin Atmosphere Lighting & Acoustics Simulator -->
+  <section class="atmosphere-section" id="atmosphere" style="padding: 6rem 0;">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Biometric In-Flight Comfort</span>
+        <h2 class="heading-lg">Circadian Cabin Mood & Acoustic Control</h2>
+        <p class="subheading" style="margin: 0.5rem auto 0;">
+          Experience dynamic circadian lighting, altitude pressure regulation, and acoustic soundscapes tuned to eliminate jetlag.
+        </p>
+      </div>
+
+      <div class="glass-panel reveal-scale" style="padding: 2.5rem; border-color: rgba(223, 186, 103, 0.35);">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem; align-items: center;">
+          <div style="position: relative; border-radius: var(--radius-md); overflow: hidden; height: 320px; border: 1px solid rgba(223,186,103,0.3);" id="atmosphereBox">
+            <img src="assets/cabin_luxury.jpg" alt="EXJET Ambient Cabin" style="width: 100%; height: 100%; object-fit: cover; transition: filter 0.8s ease, transform 1s ease;" id="atmosphereImg">
+            <div style="position: absolute; inset: 0; background: radial-gradient(circle, transparent 40%, rgba(7,9,14,0.85) 100%); pointer-events: none;"></div>
+            <div style="position: absolute; bottom: 1.5rem; left: 1.5rem; background: rgba(7,9,14,0.85); backdrop-filter: blur(10px); padding: 0.6rem 1.25rem; border-radius: var(--radius-sm); border: 1px solid rgba(223,186,103,0.3);">
+              <span style="font-size: 0.75rem; text-transform: uppercase; tracking: 2px; color: var(--gold-primary); display: block;" id="moodModeTag">Mode: Sunset Solace</span>
+              <strong style="font-size: 1rem; color: #FFF;" id="moodModeTitle">Golden Hour Circadian Glow</strong>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <h3 class="font-serif" style="font-size: 1.5rem; color: var(--gold-primary);">Select Mood Environment</h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <button class="btn btn-outline" onclick="setCabinMood('sunset')" style="text-align: left; justify-content: flex-start; gap: 0.75rem;">
+                <span style="width: 12px; height: 12px; border-radius: 50%; background: #F59E0B; display: inline-block;"></span>
+                Sunset Solace
+              </button>
+              <button class="btn btn-outline" onclick="setCabinMood('aurora')" style="text-align: left; justify-content: flex-start; gap: 0.75rem;">
+                <span style="width: 12px; height: 12px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
+                Aurora Borealis
+              </button>
+              <button class="btn btn-outline" onclick="setCabinMood('deepnight')" style="text-align: left; justify-content: flex-start; gap: 0.75rem;">
+                <span style="width: 12px; height: 12px; border-radius: 50%; background: #6366F1; display: inline-block;"></span>
+                Deep Night Rest
+              </button>
+              <button class="btn btn-outline" onclick="setCabinMood('daylight')" style="text-align: left; justify-content: flex-start; gap: 0.75rem;">
+                <span style="width: 12px; height: 12px; border-radius: 50%; background: #38BDF8; display: inline-block;"></span>
+                Alpine Daylight
+              </button>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.03); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.08);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                <span>Cabin Altitude Pressure: <strong style="color: #FFF;">2,900 ft (Sea Level Feel)</strong></span>
+                <span>Acoustic Noise Floor: <strong style="color: var(--accent-emerald);">48 dB Whispering Silent</strong></span>
+              </div>
+              <p style="font-size: 0.8rem; color: var(--text-dim); margin: 0;">
+                100% fresh air refreshed every 2 minutes via dual HEPA filtration systems to ensure zero fatigue upon arrival.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Airframe Comparison Matrix -->
+  <section class="comparison-section" id="matrix" style="padding: 6rem 0; background: rgba(0,0,0,0.2);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Aviation Intelligence</span>
+        <h2 class="heading-lg">Flagship Airframe Comparison Matrix</h2>
+        <p class="subheading" style="margin: 0.5rem auto 0;">
+          Detailed specifications, maximum speeds, range limits, and hourly rate transparency across our ultra-long range fleet.
+        </p>
+      </div>
+
+      <div class="glass-panel reveal-scale" style="overflow-x: auto; padding: 1.5rem;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 700px;">
+          <thead>
+            <tr style="border-bottom: 1px solid rgba(223,186,103,0.3); font-family: var(--font-serif); color: var(--gold-primary);">
+              <th style="padding: 1rem;">Aircraft Model</th>
+              <th style="padding: 1rem;">Class</th>
+              <th style="padding: 1rem;">Max Cruise Speed</th>
+              <th style="padding: 1rem;">Non-Stop Range</th>
+              <th style="padding: 1rem;">Max Passengers</th>
+              <th style="padding: 1rem;">Hourly Rate</th>
+              <th style="padding: 1rem;">Action</th>
+            </tr>
+          </thead>
+          <tbody style="font-size: 0.9rem; color: var(--text-main);">
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);" class="matrix-row">
+              <td style="padding: 1.25rem 1rem; font-weight: 700;">Gulfstream G700</td>
+              <td style="padding: 1rem;"><span style="background: rgba(223,186,103,0.15); color: var(--gold-primary); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem;">Ultra Long-Range</span></td>
+              <td style="padding: 1rem;">Mach 0.90 (516 kts)</td>
+              <td style="padding: 1rem;">7,500 nmi</td>
+              <td style="padding: 1rem;">19 Guests</td>
+              <td style="padding: 1rem; color: var(--gold-primary); font-weight: 700;">$11,500 / hr</td>
+              <td style="padding: 1rem;"><button class="btn btn-gold btn-sm" onclick="openModal('Gulfstream G700')">Reserve</button></td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);" class="matrix-row">
+              <td style="padding: 1.25rem 1rem; font-weight: 700;">Bombardier Global 7500</td>
+              <td style="padding: 1rem;"><span style="background: rgba(223,186,103,0.15); color: var(--gold-primary); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem;">Ultra Long-Range</span></td>
+              <td style="padding: 1rem;">Mach 0.925 (530 kts)</td>
+              <td style="padding: 1rem;">7,700 nmi</td>
+              <td style="padding: 1rem;">19 Guests</td>
+              <td style="padding: 1rem; color: var(--gold-primary); font-weight: 700;">$12,200 / hr</td>
+              <td style="padding: 1rem;"><button class="btn btn-gold btn-sm" onclick="openModal('Bombardier Global 7500')">Reserve</button></td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);" class="matrix-row">
+              <td style="padding: 1.25rem 1rem; font-weight: 700;">Dassault Falcon 10X</td>
+              <td style="padding: 1rem;"><span style="background: rgba(223,186,103,0.15); color: var(--gold-primary); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem;">Ultra Long-Range</span></td>
+              <td style="padding: 1rem;">Mach 0.925 (530 kts)</td>
+              <td style="padding: 1rem;">7,500 nmi</td>
+              <td style="padding: 1rem;">16 Guests</td>
+              <td style="padding: 1rem; color: var(--gold-primary); font-weight: 700;">$11,800 / hr</td>
+              <td style="padding: 1rem;"><button class="btn btn-gold btn-sm" onclick="openModal('Dassault Falcon 10X')">Reserve</button></td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);" class="matrix-row">
+              <td style="padding: 1.25rem 1rem; font-weight: 700;">Challenger 650</td>
+              <td style="padding: 1rem;"><span style="background: rgba(56,189,248,0.15); color: var(--accent-cyan); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem;">Heavy Executive</span></td>
+              <td style="padding: 1rem;">470 kts</td>
+              <td style="padding: 1rem;">4,000 nmi</td>
+              <td style="padding: 1rem;">12 Guests</td>
+              <td style="padding: 1rem; color: var(--gold-primary); font-weight: 700;">$7,800 / hr</td>
+              <td style="padding: 1rem;"><button class="btn btn-gold btn-sm" onclick="openModal('Challenger 650')">Reserve</button></td>
+            </tr>
+            <tr class="matrix-row">
+              <td style="padding: 1.25rem 1rem; font-weight: 700;">Embraer Praetor 600</td>
+              <td style="padding: 1rem;"><span style="background: rgba(16,185,129,0.15); color: var(--accent-emerald); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem;">Super Midsize</span></td>
+              <td style="padding: 1rem;">466 kts</td>
+              <td style="padding: 1rem;">4,018 nmi</td>
+              <td style="padding: 1rem;">9 Guests</td>
+              <td style="padding: 1rem; color: var(--gold-primary); font-weight: 700;">$6,400 / hr</td>
+              <td style="padding: 1rem;"><button class="btn btn-gold btn-sm" onclick="openModal('Embraer Praetor 600')">Reserve</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Executive Testimonials Section -->
+  <section class="testimonials-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Client Reviews</span>
+        <h2 class="heading-lg">Endorsed by Industry Leaders</h2>
+      </div>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card glass-panel reveal-scale delay-1">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"EXJET delivers unmatched precision. Dispatching a Gulfstream G700 from Teterboro to Dubai within 4 hours notice was executed flawlessly."</p>
+          <div class="testimonial-author">
+            <strong>Lord Alistair Sterling</strong>
+            <span>Managing Partner, Sterling Family Office</span>
+          </div>
+        </div>
+
+        <div class="testimonial-card glass-panel reveal-scale delay-2">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"The bespoke cabin customizer and Michelin sommelier dining selection turned our transatlantic flight into a world-class experience."</p>
+          <div class="testimonial-author">
+            <strong>Elena Rostova</strong>
+            <span>CEO, Rostova Global Logistics</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Frequently Asked Questions Section -->
+  <section class="faq-section" id="faq">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Knowledge Base</span>
+        <h2 class="heading-lg">Frequently Asked Questions</h2>
+      </div>
+
+      <div class="faq-list glass-panel reveal-scale">
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-question">
+            <span>How fast can an EXJET private jet be dispatched?</span>
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Our global fleet boasts a 99.8% on-time dispatch rate. With JetCard membership, aircraft can be ready on tarmac within 4 to 12 hours worldwide.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-question">
+            <span>Are pets allowed in the main cabin?</span>
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Yes. All EXJET private jet charters are 100% pet-friendly. Your pets travel right beside you in the luxury cabin suite with no cages required.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-question">
+            <span>What is included in the charter price estimate?</span>
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>All estimates include flight hour charges, fuel surcharges, VIP terminal fees, ground handling, standard inflight catering, and high-speed Wi-Fi.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Custom Studio Cursor -->
+  <div class="studio-cursor" id="studioCursor"></div>
+  <div class="studio-cursor-dot" id="studioCursorDot"></div>
+
+  <!-- Quote & Booking Modal -->
+  <div class="modal-backdrop" id="bookingModal">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal()">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <h3 class="heading-lg text-gold" style="font-size: 1.8rem; margin-bottom: 0.5rem;" id="modalTitle">Charter Flight Reservation</h3>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;" id="modalSub">Instant binding quote calculation breakdown</p>
+
+      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(223,186,103,0.2); padding: 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;" id="modalBreakdown">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.6rem;">
+          <span style="color: var(--text-muted);">Route Flight Segment</span>
+          <strong id="summaryRoute" style="color: #FFF;">TEB -> FAB (3,470 nmi)</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.6rem;">
+          <span style="color: var(--text-muted);">Selected Aircraft</span>
+          <strong id="summaryAircraft" style="color: var(--gold-primary);">Gulfstream G700 Flagship</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.6rem;">
+          <span style="color: var(--text-muted);">Est. Flight Duration</span>
+          <span id="summaryTime" style="color: #FFF;">6 hrs 45 mins</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 0.75rem;">
+          <span style="font-weight: 700; color: #FFF;">Total Inclusive Quote</span>
+          <strong id="summaryTotal" style="font-size: 1.4rem; color: var(--gold-primary);">$64,500 USD</strong>
+        </div>
+      </div>
+
+      <form onsubmit="event.preventDefault(); alert('Reservation Request Transmitted to EXJET Concierge! A flight manager will contact you within 5 minutes.'); closeModal();">
+        <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+          <input type="text" class="custom-input" placeholder="Full Passenger / Company Name" required>
+          <input type="email" class="custom-input" placeholder="Executive Contact Email" required>
+          <input type="tel" class="custom-input" placeholder="Direct Phone / WhatsApp" required>
+        </div>
+        <button type="submit" class="btn btn-gold" style="width: 100%;">Confirm & Dispatch Flight Manager</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="brand-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 2L11 13"></path>
+              <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+            </svg>
+            <span class="brand-title">EX<span>JET</span></span>
+          </a>
+          <p>
+            The pinnacle of executive aviation. Combining cutting-edge aerospace engineering with uncompromising personalized luxury.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Charter Services</h4>
+          <ul>
+            <li><a href="#fleet">Ultra Long-Range Jets</a></li>
+            <li><a href="#fleet">Heavy Executive Jets</a></li>
+            <li><a href="#emptylegs">Empty Leg Finder</a></li>
+            <li><a href="#customizer">JetCard Membership</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Global Hubs</h4>
+          <ul>
+            <li><a href="#">New York Teterboro (TEB)</a></li>
+            <li><a href="#">London Farnborough (FAB)</a></li>
+            <li><a href="#">Paris Le Bourget (LBG)</a></li>
+            <li><a href="#">Dubai Al Maktoum (DWC)</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Safety & Compliance</h4>
+          <ul>
+            <li><a href="#">ARG/US Platinum Standard</a></li>
+            <li><a href="#">Wyvern Wingman Safety</a></li>
+            <li><a href="#">FAA Part 135 Operations</a></li>
+            <li><a href="#">24/7 Global Ops Desk</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 EXJET Executive Aviation Group Ltd. All Rights Reserved.</span>
+        <div style="display: flex; gap: 1.5rem;">
+          <a href="#" style="color: var(--text-dim); text-decoration: none;">Privacy Policy</a>
+          <a href="#" style="color: var(--text-dim); text-decoration: none;">Terms of Charter</a>
+          <a href="#" style="color: var(--text-dim); text-decoration: none;">Security Protocol</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- GSAP Core & ScrollTrigger Plugin -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
