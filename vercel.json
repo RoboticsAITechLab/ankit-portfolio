@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd ankit-portfolio && npm run build",
+  "installCommand": "cd ankit-portfolio && npm install",
+  "outputDirectory": "ankit-portfolio/.next",
+  "framework": "nextjs"
+}
