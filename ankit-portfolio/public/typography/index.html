@@ -193,7 +193,7 @@
       <div class="customizer-grid">
         <!-- Live Preview Card -->
         <div class="customizer-preview glass-panel reveal-left delay-1">
-          <img src="assets/cabin_luxury.jpg" alt="EXJET Luxury Cabin Suite" class="preview-img">
+          <img src="assets/vip_lounge.jpg" alt="EXJET Luxury Cabin Suite" class="preview-img">
           <div class="preview-overlay">
             <h3 class="font-serif" style="font-size: 1.5rem; color: var(--gold-primary);">Customized VIP Suite</h3>
             <p style="font-size: 0.9rem; color: var(--text-muted);">Estimated Cabin Upgrade Addon: <strong id="customizerPrice" style="color: #FFF;">+$1,850</strong></p>
@@ -280,10 +280,11 @@
         </p>
       </div>
 
-      <div class="radar-wrapper reveal-scale delay-1">
-        <canvas id="routeCanvas"></canvas>
+      <div class="radar-wrapper reveal-scale delay-1" style="position: relative; overflow: hidden; border-radius: var(--radius-lg); border: 1px solid rgba(223,186,103,0.35);">
+        <img src="assets/cockpit_hud.jpg" alt="EXJET Futuristic Flight HUD Radar Cockpit" style="width: 100%; height: 420px; object-fit: cover; filter: brightness(0.7) contrast(1.1); transition: transform 1.2s ease;">
+        <canvas id="routeCanvas" style="position: absolute; inset: 0; pointer-events: none; opacity: 0.85;"></canvas>
         
-        <div class="radar-overlay-info">
+        <div class="radar-overlay-info" style="z-index: 10;">
           <h4 class="radar-title">Transatlantic Express Corridor</h4>
           <p class="radar-desc">Active Jet: Gulfstream G700 • TEB -> FAB</p>
           <div style="margin-top: 0.5rem; display: flex; gap: 1rem; font-size: 0.8rem; color: var(--gold-primary);">

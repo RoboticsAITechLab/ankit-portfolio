@@ -201,12 +201,12 @@ function setupHeroTimeline() {
    2. ScrollTrigger Section Entrance Reveals
    -------------------------------------------------------------------------- */
 function setupSectionScrollTriggers() {
-  // Section Headers - Animations trigger every time user scrolls up/down into view
+  // 1. Section Headers - Smooth Fade Up & Scale
   gsap.utils.toArray('.section-header').forEach(header => {
     gsap.fromTo(header, 
-      { y: 50, opacity: 0 },
+      { y: 55, opacity: 0, scale: 0.95 },
       {
-        y: 0, opacity: 1, duration: 0.85, ease: "power3.out",
+        y: 0, opacity: 1, scale: 1, duration: 0.9, ease: "power3.out",
         scrollTrigger: {
           trigger: header,
           start: "top 88%",
@@ -217,12 +217,44 @@ function setupSectionScrollTriggers() {
     );
   });
 
-  // Reveal Glass Cards & Panels on Every Scroll
-  gsap.utils.toArray('.reveal, .reveal-scale, .glass-panel, .testimonial-card, .matrix-row').forEach(el => {
+  // 2. Reveal Left Elements (Slide in from Left with Rotation)
+  gsap.utils.toArray('.reveal-left').forEach(el => {
     gsap.fromTo(el,
-      { y: 40, opacity: 0, scale: 0.97 },
+      { x: -70, opacity: 0, rotationY: 15 },
       {
-        y: 0, opacity: 1, scale: 1, duration: 0.75, ease: "power2.out",
+        x: 0, opacity: 1, rotationY: 0, duration: 0.95, ease: "power3.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 88%",
+          end: "bottom 8%",
+          toggleActions: "restart reverse restart reverse"
+        }
+      }
+    );
+  });
+
+  // 3. Reveal Right Elements (Slide in from Right with Rotation)
+  gsap.utils.toArray('.reveal-right').forEach(el => {
+    gsap.fromTo(el,
+      { x: 70, opacity: 0, rotationY: -15 },
+      {
+        x: 0, opacity: 1, rotationY: 0, duration: 0.95, ease: "power3.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 88%",
+          end: "bottom 8%",
+          toggleActions: "restart reverse restart reverse"
+        }
+      }
+    );
+  });
+
+  // 4. Reveal Scale Cards (Zoom Spring In)
+  gsap.utils.toArray('.reveal-scale, .glass-panel, .testimonial-card').forEach(el => {
+    gsap.fromTo(el,
+      { y: 45, opacity: 0, scale: 0.92 },
+      {
+        y: 0, opacity: 1, scale: 1, duration: 0.85, ease: "back.out(1.4)",
         scrollTrigger: {
           trigger: el,
           start: "top 90%",
@@ -233,13 +265,28 @@ function setupSectionScrollTriggers() {
     );
   });
 
-  // Radar Wrapper Entrance
+  // 5. Staggered Row Animation for Airframe Matrix Table
+  gsap.utils.toArray('.matrix-row').forEach((row, idx) => {
+    gsap.fromTo(row,
+      { x: -30, opacity: 0 },
+      {
+        x: 0, opacity: 1, duration: 0.6, delay: idx * 0.08, ease: "power2.out",
+        scrollTrigger: {
+          trigger: row,
+          start: "top 92%",
+          toggleActions: "restart reverse restart reverse"
+        }
+      }
+    );
+  });
+
+  // 6. Radar & Flight Cockpit Wrapper Entrance
   const radarWrapper = document.querySelector('.radar-wrapper');
   if (radarWrapper) {
     gsap.fromTo(radarWrapper,
-      { y: 60, opacity: 0, scale: 0.93 },
+      { y: 70, opacity: 0, scale: 0.9, rotationX: 10 },
       {
-        y: 0, opacity: 1, scale: 1, duration: 0.9, ease: "power3.out",
+        y: 0, opacity: 1, scale: 1, rotationX: 0, duration: 1.0, ease: "power3.out",
         scrollTrigger: {
           trigger: radarWrapper,
           start: "top 85%",
@@ -250,7 +297,7 @@ function setupSectionScrollTriggers() {
     );
   }
 
-  // Empty Leg Banner
+  // 7. Empty Leg Banner
   const emptyBanner = document.querySelector('.empty-leg-banner');
   if (emptyBanner) {
     gsap.fromTo(emptyBanner,
