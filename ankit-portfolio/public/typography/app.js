@@ -875,3 +875,95 @@ function setCabinMood(mode) {
     title.innerText = 'Full-Spectrum Energizing Daylight';
   }
 }
+
+/* --------------------------------------------------------------------------
+   Jet Engine Sound FX WebAudio Synthesizer
+   -------------------------------------------------------------------------- */
+let audioCtx = null;
+let engineOsc = null;
+let engineGain = null;
+
+function playEngineSound(type) {
+  const statusText = document.getElementById('audioStatusText');
+  const bars = document.querySelectorAll('#audioVisualizer .v-bar');
+  
+  if (type === 'mute') {
+    if (engineGain) engineGain.gain.setValueAtTime(0, audioCtx.currentTime);
+    if (statusText) statusText.innerText = 'Current Noise Profile: Whisper Mute Active (0dB Sound Cancellation)';
+    bars.forEach(bar => bar.style.height = '10%');
+    return;
+  }
+
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+
+  if (!engineOsc) {
+    engineOsc = audioCtx.createOscillator();
+    engineGain = audioCtx.createGain();
+    engineOsc.type = 'sawtooth';
+    engineOsc.frequency.setValueAtTime(75, audioCtx.currentTime);
+    engineGain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+    engineOsc.connect(engineGain);
+    engineGain.connect(audioCtx.destination);
+    engineOsc.start();
+  }
+
+  if (type === 'takeoff') {
+    engineOsc.frequency.exponentialRampToValueAtTime(160, audioCtx.currentTime + 1.2);
+    engineGain.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + 0.8);
+    if (statusText) statusText.innerText = 'Current Noise Profile: Takeoff Power (85dB Exterior Rolls-Royce Pearl 700 Thrust)';
+    bars.forEach((bar, i) => bar.style.height = `${(i % 3 + 1) * 30}%`);
+  } else if (type === 'cruise') {
+    engineOsc.frequency.exponentialRampToValueAtTime(85, audioCtx.currentTime + 1.0);
+    engineGain.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 0.8);
+    if (statusText) statusText.innerText = 'Current Noise Profile: Mach 0.90 Cruise (48dB Acoustic Whisper-Quiet Cabin)';
+    bars.forEach((bar, i) => bar.style.height = `${(i % 2 + 1) * 20}%`);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Seat Selector Handler
+   -------------------------------------------------------------------------- */
+function selectSeat(btn, seatTitle, zoneName) {
+  document.querySelectorAll('.seat-btn').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+
+  const titleEl = document.getElementById('seatSelectedTitle');
+  if (titleEl) {
+    titleEl.innerText = `${seatTitle} (${zoneName})`;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Flight Fuel Burn & Carbon Offset Calculator
+   -------------------------------------------------------------------------- */
+function updateFuelCalculator() {
+  const dist = parseInt(document.getElementById('fuelDistRange').value);
+  const isSaf = document.getElementById('safToggle').checked;
+
+  document.getElementById('nmiDisplay').innerText = `${dist.toLocaleString()} nmi`;
+
+  // Fuel calculation formula ~ 4.1 lbs per nmi for ultra long-range jet
+  const fuelLbs = Math.round(dist * 4.1);
+  const hours = Math.floor(dist / 515);
+  const mins = Math.round(((dist / 515) - hours) * 60);
+
+  document.getElementById('fuelLbs').innerText = `${fuelLbs.toLocaleString()} lbs Jet-A1`;
+  document.getElementById('flightHoursEst').innerText = `${hours} hrs ${mins} mins`;
+
+  const carbonTons = (dist * 0.0035).toFixed(1);
+  const carbonEl = document.getElementById('carbonOffset');
+
+  if (isSaf) {
+    carbonEl.innerText = '0.0 Tons CO2 (100% SAF Net Zero Offset)';
+    carbonEl.style.color = 'var(--accent-emerald)';
+  } else {
+    carbonEl.innerText = `${carbonTons} Tons CO2`;
+    carbonEl.style.color = 'var(--accent-rose)';
+  }
+}

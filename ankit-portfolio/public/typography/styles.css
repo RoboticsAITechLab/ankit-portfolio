@@ -250,6 +250,33 @@ body {
   text-shadow: 0 0 10px var(--gold-glow);
 }
 
+/* Seat Selector Custom Button */
+.seat-btn {
+  background: rgba(15, 22, 34, 0.9);
+  border: 1px solid rgba(223, 186, 103, 0.3);
+  color: var(--text-main);
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.seat-btn:hover {
+  border-color: var(--gold-primary);
+  background: rgba(223, 186, 103, 0.15);
+  transform: translateY(-2px);
+}
+
+.seat-btn.active {
+  background: var(--gold-gradient);
+  color: #07090E;
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 12px rgba(223, 186, 103, 0.5);
+  font-weight: 700;
+}
+
 .nav-actions {
   display: flex;
   align-items: center;

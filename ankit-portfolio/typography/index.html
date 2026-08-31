@@ -538,6 +538,190 @@
     </div>
   </section>
 
+  <!-- Interactive Jet Engine Acoustics & Altitude Audio Simulator -->
+  <section class="engine-audio-section" id="audio-sim" style="padding: 5rem 0; background: linear-gradient(180deg, transparent 0%, rgba(15,22,34,0.8) 50%, transparent 100%);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Acoustic Engineering</span>
+        <h2 class="heading-lg">Jet Engine Acoustic & Cabin Silence Simulator</h2>
+        <p class="subheading" style="margin: 0.5rem auto 0;">
+          Listen to the whisper-quiet 48dB interior acoustics of Rolls-Royce Pearl 700 engines synthesized live.
+        </p>
+      </div>
+
+      <div class="glass-panel reveal-scale" style="padding: 2.5rem; text-align: center;">
+        <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
+          <button class="btn btn-outline" id="audioBtnTakeoff" onclick="playEngineSound('takeoff')">▶ Takeoff Power (85dB Ext)</button>
+          <button class="btn btn-gold" id="audioBtnCruise" onclick="playEngineSound('cruise')">🔊 Mach 0.90 Cruise (48dB Cabin)</button>
+          <button class="btn btn-outline" id="audioBtnMute" onclick="playEngineSound('mute')">🔇 Whisper Mute</button>
+        </div>
+
+        <div style="height: 60px; display: flex; align-items: center; justify-content: center; gap: 4px;" id="audioVisualizer">
+          <!-- Bars dynamically animated via JS -->
+          <div class="v-bar" style="height: 20%; width: 6px; background: var(--gold-primary); border-radius: 3px; transition: height 0.15s ease;"></div>
+          <div class="v-bar" style="height: 50%; width: 6px; background: var(--gold-primary); border-radius: 3px; transition: height 0.15s ease;"></div>
+          <div class="v-bar" style="height: 80%; width: 6px; background: var(--gold-primary); border-radius: 3px; transition: height 0.15s ease;"></div>
+          <div class="v-bar" style="height: 40%; width: 6px; background: var(--gold-primary); border-radius: 3px; transition: height 0.15s ease;"></div>
+          <div class="v-bar" style="height: 90%; width: 6px; background: var(--gold-primary); border-radius: 3px; transition: height 0.15s ease;"></div>
+          <div class="v-bar" style="height: 30%; width: 6px; background: var(--gold-primary); border-radius: 3px; transition: height 0.15s ease;"></div>
+          <div class="v-bar" style="height: 70%; width: 6px; background: var(--gold-primary); border-radius: 3px; transition: height 0.15s ease;"></div>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem;" id="audioStatusText">Current Noise Profile: Engine Idle (Simulated Frequency WebAudio Synth Active)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive 3D Cabin Seating Map & Floorplan Customizer -->
+  <section class="floorplan-section" id="seat-map" style="padding: 6rem 0;">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Interactive Seat Selector</span>
+        <h2 class="heading-lg">Flagship G700 Cabin Floorplan</h2>
+        <p class="subheading" style="margin: 0.5rem auto 0;">
+          Select your preferred VIP lounge seat, executive conference dining table, or master bedroom suite.
+        </p>
+      </div>
+
+      <div class="glass-panel reveal-scale" style="padding: 2rem;">
+        <div style="background: rgba(7,9,14,0.9); border: 1px solid rgba(223,186,103,0.3); border-radius: var(--radius-md); padding: 2rem; position: relative; overflow-x: auto;">
+          <div style="min-width: 800px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-left: 4px solid var(--gold-primary); padding-left: 1.5rem;">
+            <!-- Cockpit -->
+            <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: var(--radius-sm); text-align: center; border: 1px border-dashed var(--text-dim);">
+              <span style="font-size: 0.75rem; color: var(--gold-primary); font-weight: 700;">COCKPIT</span>
+              <p style="font-size: 0.7rem; color: var(--text-dim); margin: 0;">Flight Crew</p>
+            </div>
+
+            <!-- Forward Executive Club -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; background: rgba(223,186,103,0.05); padding: 1rem; border-radius: var(--radius-sm);">
+              <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">ZONE 1: VIP CLUB</span>
+              <div style="display: flex; gap: 1rem;">
+                <button class="seat-btn active" onclick="selectSeat(this, 'Seat 1A - Master Captain Recliner', 'Zone 1 VIP Club')">1A 💺</button>
+                <button class="seat-btn" onclick="selectSeat(this, 'Seat 1B - Forward Window Executive', 'Zone 1 VIP Club')">1B 💺</button>
+                <button class="seat-btn" onclick="selectSeat(this, 'Seat 2A - Executive Desk Seat', 'Zone 1 VIP Club')">2A 💺</button>
+                <button class="seat-btn" onclick="selectSeat(this, 'Seat 2B - Executive Desk Seat', 'Zone 1 VIP Club')">2B 💺</button>
+              </div>
+            </div>
+
+            <!-- Dining & Conference Suite -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; background: rgba(56,189,248,0.05); padding: 1rem; border-radius: var(--radius-sm);">
+              <span style="font-size: 0.7rem; color: var(--accent-cyan); font-weight: 700;">ZONE 2: 6-GUEST DINING TABLE</span>
+              <div style="display: flex; gap: 1rem;">
+                <button class="seat-btn" onclick="selectSeat(this, 'Dining Seat 3A - Head of Table', 'Zone 2 Conference')">3A 🍽️</button>
+                <button class="seat-btn" onclick="selectSeat(this, 'Dining Seat 3B - Guest Chair', 'Zone 2 Conference')">3B 🍽️</button>
+                <button class="seat-btn" onclick="selectSeat(this, 'Dining Seat 4A - Guest Chair', 'Zone 2 Conference')">4A 🍽️</button>
+                <button class="seat-btn" onclick="selectSeat(this, 'Dining Seat 4B - Guest Chair', 'Zone 2 Conference')">4B 🍽️</button>
+              </div>
+            </div>
+
+            <!-- Stateroom Master Bedroom -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; background: rgba(16,185,129,0.05); padding: 1rem; border-radius: var(--radius-sm);">
+              <span style="font-size: 0.7rem; color: var(--accent-emerald); font-weight: 700;">ZONE 3: MASTER BEDROOM</span>
+              <button class="seat-btn" onclick="selectSeat(this, 'Master Bed Suite (King Size)', 'Zone 3 Master Sanctuary')" style="padding: 0.6rem 1.5rem;">🛏️ Master Bed Suite</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;" id="selectedSeatBox">
+          <div>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">Selected Seat Reservation:</span>
+            <h4 style="color: var(--gold-primary); font-size: 1.1rem; margin-top: 0.2rem;" id="seatSelectedTitle">Seat 1A - Master Captain Recliner (Zone 1 VIP Club)</h4>
+          </div>
+          <button class="btn btn-gold btn-sm" onclick="openModal('Seat Lock: ' + document.getElementById('seatSelectedTitle').innerText)">Lock Seat Reservation</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Real-Time Fuel Burn & Carbon Offset Calculator -->
+  <section class="fuel-calc-section" id="fuel-calc" style="padding: 6rem 0; background: rgba(0,0,0,0.2);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Sustainable Aviation (SAF)</span>
+        <h2 class="heading-lg">Flight Fuel & Carbon Neutral Offset Calculator</h2>
+        <p class="subheading" style="margin: 0.5rem auto 0;">
+          Compute exact jet fuel consumption, flight hours, and 100% Sustainable Aviation Fuel (SAF) carbon offset options.
+        </p>
+      </div>
+
+      <div class="glass-panel reveal-scale" style="padding: 2.5rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; align-items: center;">
+          <div>
+            <label class="input-label">Flight Distance (Nautical Miles): <strong id="nmiDisplay" style="color: var(--gold-primary);">3,470 nmi</strong></label>
+            <input type="range" min="500" max="8000" step="250" value="3470" class="custom-range" id="fuelDistRange" oninput="updateFuelCalculator()">
+            
+            <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+              <label class="input-label" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="checkbox" id="safToggle" checked onchange="updateFuelCalculator()" style="width: 18px; height: 18px; accent-color: var(--accent-emerald);">
+                <span>Apply 100% Sustainable Aviation Fuel (SAF) Blend (+$450/hr)</span>
+              </label>
+            </div>
+          </div>
+
+          <div style="background: rgba(7,9,14,0.8); border: 1px solid rgba(223,186,103,0.3); border-radius: var(--radius-sm); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: var(--text-muted);">Est. Jet Fuel Consumption:</span>
+              <strong id="fuelLbs" style="color: #FFF;">14,220 lbs Jet-A1</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: var(--text-muted);">Flight Time (Mach 0.90):</span>
+              <strong id="flightHoursEst" style="color: var(--gold-primary);">6 hrs 45 mins</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.75rem;">
+              <span style="color: var(--text-muted);">Net CO2 Carbon Footprint:</span>
+              <strong id="carbonOffset" style="color: var(--accent-emerald);">0.0 Tons (100% SAF Offset)</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIP Terminal Helicopter Transfer Booking Module -->
+  <section class="helicopter-section" id="heli-transfer" style="padding: 6rem 0;">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Seamless Tarmac Mobility</span>
+        <h2 class="heading-lg">VIP Helicopter Tarmac Transfer</h2>
+        <p class="subheading" style="margin: 0.5rem auto 0;">
+          Skip city traffic with direct twin-engine AgustaWestland AW139 helicopter transfers directly to your private jet side.
+        </p>
+      </div>
+
+      <div class="glass-panel reveal-scale" style="padding: 2.5rem; border-color: rgba(56,189,248,0.3);">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; align-items: center;">
+          <div>
+            <h3 class="font-serif" style="font-size: 1.4rem; color: var(--accent-cyan); margin-bottom: 0.75rem;">Direct Helipad-to-Jetway Connection</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+              Arrive at Manhattan Blade Lounge, London Battersea, or Dubai Downtown helipads. Land directly on tarmac beside your waiting EXJET flagship within 12 minutes.
+            </p>
+            <ul style="list-style: none; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.85rem; color: var(--text-main);">
+              <li>✓ Twin-Engine Executive AW139 / Sikorsky S-76 Fleet</li>
+              <li>✓ Luggage Auto-Transfer by VIP Handler</li>
+              <li>✓ Instant Passport Clearance at Private Terminal</li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(7,9,14,0.85); border: 1px solid rgba(56,189,248,0.3); padding: 1.75rem; border-radius: var(--radius-md);">
+            <h4 style="color: #FFF; margin-bottom: 1rem; font-size: 1.1rem;">Add Helicopter Transfer to Charter</h4>
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.25rem;">
+              <select class="custom-select" id="heliCity">
+                <option value="JRB">New York (Downtown Manhattan - JRB)</option>
+                <option value="BAT">London (Battersea Heliport - BAT)</option>
+                <option value="JGE">Dubai (Jebel Ali Helipad - JGE)</option>
+                <option value="MCM">Monaco (Heliporterie - MCM)</option>
+              </select>
+              <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                <span style="color: var(--text-muted);">Flat Transfer Rate:</span>
+                <strong style="color: var(--gold-primary);">$3,800 USD</strong>
+              </div>
+            </div>
+            <button class="btn btn-gold" style="width: 100%;" onclick="openModal('Heli Transfer: ' + document.getElementById('heliCity').value)">Book Helicopter Transfer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- 3D Cabin Atmosphere Lighting & Acoustics Simulator -->
   <section class="atmosphere-section" id="atmosphere" style="padding: 6rem 0;">
     <div class="container">
