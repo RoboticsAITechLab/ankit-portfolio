@@ -1,0 +1,18 @@
+{
+  "name": "ankit-portfolio-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:portfolio": "npm --prefix ankit-portfolio run dev",
+    "dev:admin": "npm --prefix admin-panel run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "build:portfolio": "npm --prefix ankit-portfolio run build",
+    "build:admin": "npm --prefix admin-panel run build",
+    "build:backend": "npm --prefix backend run build"
+  },
+  "workspaces": [
+    "ankit-portfolio",
+    "admin-panel",
+    "backend"
+  ]
+}
