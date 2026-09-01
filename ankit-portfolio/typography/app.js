@@ -577,33 +577,85 @@ function playAnimeCardStep(cards, container) {
 }
 
 /* --------------------------------------------------------------------------
-   6. Custom Typography Studio Interactive Cursor
+   6. Bespoke Aviation Jet & Radar HUD Interactive Cursor Physics
    -------------------------------------------------------------------------- */
+let lastMouseX = 0;
+let lastMouseY = 0;
+let currentJetAngle = 0;
+
 function setupCustomStudioCursor() {
-  const cursor = document.getElementById('studioCursor');
-  const cursorDot = document.getElementById('studioCursorDot');
-  if (!cursor || !cursorDot) return;
+  const jetPlane = document.getElementById('jetCursorPlane');
+  const jetRadar = document.getElementById('jetCursorRadar');
+  const radarTag = document.getElementById('radarTargetTag');
+  const clickBurst = document.getElementById('jetClickBurst');
+
+  if (!jetPlane || !jetRadar) return;
 
   window.addEventListener('mousemove', (e) => {
-    gsap.to(cursorDot, {
-      x: e.clientX,
-      y: e.clientY,
-      duration: 0.1,
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+
+    const dx = mouseX - lastMouseX;
+    const dy = mouseY - lastMouseY;
+    const speed = Math.sqrt(dx * dx + dy * dy);
+
+    if (speed > 1.5) {
+      const targetAngle = (Math.atan2(dy, dx) * 180 / Math.PI) + 90;
+      currentJetAngle = targetAngle;
+    }
+
+    lastMouseX = mouseX;
+    lastMouseY = mouseY;
+
+    gsap.to(jetPlane, {
+      x: mouseX,
+      y: mouseY,
+      rotation: currentJetAngle,
+      duration: 0.12,
       ease: "power2.out"
     });
 
-    gsap.to(cursor, {
-      x: e.clientX,
-      y: e.clientY,
-      duration: 0.35,
+    gsap.to(jetRadar, {
+      x: mouseX,
+      y: mouseY,
+      duration: 0.32,
       ease: "power3.out"
     });
   });
 
-  const hoverTargets = document.querySelectorAll('a, button, .jet-card, .studio-card, .opt-card');
-  hoverTargets.forEach(el => {
-    el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-    el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+  // Interactive Elements Target Lock-On
+  const hoverTargets = [
+    { selector: '.jet-card', label: 'LOCK-ON: CURATED AIRFRAME' },
+    { selector: '.studio-card', label: 'LOCK-ON: BRAND IDENTITY' },
+    { selector: '.opt-card', label: 'SELECT CABIN AMENITY' },
+    { selector: '.btn-gold, button.btn-gold', label: 'DISPATCH • FLIGHT DESK' },
+    { selector: '.btn-outline, a', label: 'TACTICAL NAVIGATION' },
+    { selector: '.custom-select, input', label: 'FLIGHT PARAMETER INPUT' }
+  ];
+
+  hoverTargets.forEach(({ selector, label }) => {
+    document.querySelectorAll(selector).forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        jetRadar.classList.add('hovered');
+        jetPlane.classList.add('hovered');
+        if (radarTag) radarTag.innerText = label;
+      });
+      el.addEventListener('mouseleave', () => {
+        jetRadar.classList.remove('hovered');
+        jetPlane.classList.remove('hovered');
+        if (radarTag) radarTag.innerText = 'FLIGHT HUD • MACH 0.92';
+      });
+    });
+  });
+
+  // Supersonic Click Shockwave
+  window.addEventListener('mousedown', (e) => {
+    if (!clickBurst) return;
+    clickBurst.style.left = `${e.clientX}px`;
+    clickBurst.style.top = `${e.clientY}px`;
+    clickBurst.classList.remove('animate');
+    void clickBurst.offsetWidth;
+    clickBurst.classList.add('animate');
   });
 }
 

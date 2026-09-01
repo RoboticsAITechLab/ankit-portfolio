@@ -1043,6 +1043,37 @@
     </div>
   </footer>
 
+  <!-- Bespoke EXJET Aviation Flight HUD Custom Cursor -->
+  <div class="jet-cursor-system" id="jetCursorSystem">
+    <!-- Main Aerodynamic Supersonic Gold Jet Pointer (Dynamic Angle) -->
+    <div class="jet-cursor-plane" id="jetCursorPlane">
+      <svg viewBox="0 0 32 32" class="jet-icon-svg" fill="none" stroke="currentColor">
+        <path d="M16 2 L19 12 L29 17 L29 20 L19 18 L18 26 L22 29 L22 31 L16 29 L10 31 L10 29 L14 26 L13 18 L3 20 L3 17 L13 12 Z" 
+              fill="url(#goldCursorGrad)" stroke="#DFBA67" stroke-width="0.8"/>
+        <defs>
+          <linearGradient id="goldCursorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/>
+            <stop offset="50%" stop-color="#DFBA67" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="#A88334" stop-opacity="0.9"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <!-- Sonic Vapour Contrail Dot -->
+      <div class="jet-contrail-glow"></div>
+    </div>
+
+    <!-- Outer Aviation Radar Reticle HUD -->
+    <div class="jet-cursor-radar" id="jetCursorRadar">
+      <div class="radar-crosshair radar-ch-h"></div>
+      <div class="radar-crosshair radar-ch-v"></div>
+      <div class="radar-ring"></div>
+      <div class="radar-tag" id="radarTargetTag">FLIGHT HUD • MACH 0.92</div>
+    </div>
+
+    <!-- Click Sonic Shockwave Burst Ring -->
+    <div class="jet-click-burst" id="jetClickBurst"></div>
+  </div>
+
   <!-- GSAP Core & ScrollTrigger Plugin -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
