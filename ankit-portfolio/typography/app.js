@@ -156,14 +156,15 @@ function initMotionSystem() {
    0. Kinetic Typography Engine (Smooth Stagger Reveal)
    -------------------------------------------------------------------------- */
 function initKineticTypography() {
-  gsap.utils.toArray('.heading-lg, .heading-xl').forEach(heading => {
+  // Only target section headings (.heading-lg), excluding hero (.heading-xl) which is managed smoothly by hero timeline
+  gsap.utils.toArray('.heading-lg').forEach(heading => {
     gsap.fromTo(heading,
-      { y: 35, opacity: 0 },
+      { y: 30, opacity: 0 },
       {
-        y: 0, opacity: 1, duration: 0.8, ease: "power3.out",
+        y: 0, opacity: 1, duration: 0.7, ease: "power2.out",
         scrollTrigger: {
           trigger: heading,
-          start: "top 88%",
+          start: "top 90%",
           toggleActions: "play none none none"
         }
       }
@@ -264,34 +265,30 @@ function setupVelocityScrollSkew() {
 }
 
 /* --------------------------------------------------------------------------
-   1. Hero Entrance Sequence Timeline (Instant & Snappy Load)
+   1. Hero Entrance Sequence Timeline (Smooth, Unified Cinematic Entrance)
    -------------------------------------------------------------------------- */
 function setupHeroTimeline() {
-  const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+  const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-  tl.fromTo(".hero-bg-img", 
-    { scale: 1.05, opacity: 0.9 }, 
-    { scale: 1.0, opacity: 1, duration: 0.8, ease: "power2.out" }
-  )
-  .fromTo(".hero-badge", 
-    { y: 15, opacity: 0 }, 
-    { y: 0, opacity: 1, duration: 0.4 }, "-=0.6"
+  tl.fromTo(".hero-badge", 
+    { y: 20, opacity: 0 }, 
+    { y: 0, opacity: 1, duration: 0.6 }
   )
   .fromTo(".heading-xl", 
-    { y: 20, opacity: 0 }, 
-    { y: 0, opacity: 1, duration: 0.5 }, "-=0.3"
+    { y: 25, opacity: 0 }, 
+    { y: 0, opacity: 1, duration: 0.7 }, "-=0.4"
   )
   .fromTo(".hero .subheading", 
-    { y: 15, opacity: 0 }, 
-    { y: 0, opacity: 1, duration: 0.4 }, "-=0.3"
+    { y: 20, opacity: 0 }, 
+    { y: 0, opacity: 1, duration: 0.6 }, "-=0.4"
   )
   .fromTo(".search-widget", 
-    { y: 25, opacity: 0, scale: 0.98 }, 
-    { y: 0, opacity: 1, scale: 1.0, duration: 0.5, ease: "power2.out" }, "-=0.3"
+    { y: 30, opacity: 0 }, 
+    { y: 0, opacity: 1, duration: 0.7 }, "-=0.4"
   )
   .fromTo(".hero-stats .stat-card", 
-    { y: 15, opacity: 0 }, 
-    { y: 0, opacity: 1, duration: 0.4, stagger: 0.06 }, "-=0.2"
+    { y: 20, opacity: 0 }, 
+    { y: 0, opacity: 1, duration: 0.5, stagger: 0.08 }, "-=0.3"
   );
 }
 
