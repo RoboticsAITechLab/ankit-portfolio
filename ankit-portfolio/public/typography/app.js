@@ -139,6 +139,7 @@ function initMotionSystem() {
     return;
   }
 
+  initKineticTypography();
   setupHeroTimeline();
   setupSectionScrollTriggers();
   setupPinnedSanctuarySection();
@@ -148,6 +149,128 @@ function initMotionSystem() {
   setupParallaxBackgrounds();
   setupCustomStudioCursor();
   setupCinematicCardOverlapSequence();
+  init3DCardPhysics();
+}
+
+/* --------------------------------------------------------------------------
+   0. Kinetic Typography Engine (Split-Word & Character 3D Stagger Flip)
+   -------------------------------------------------------------------------- */
+function initKineticTypography() {
+  const headings = document.querySelectorAll('.heading-lg');
+  headings.forEach(heading => {
+    if (heading.dataset.splitApplied) return;
+    heading.dataset.splitApplied = "true";
+
+    const childNodes = Array.from(heading.childNodes);
+    heading.innerHTML = '';
+
+    childNodes.forEach(node => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const words = node.textContent.split(/\s+/).filter(Boolean);
+        words.forEach(word => {
+          const wordSpan = document.createElement('span');
+          wordSpan.className = 'split-word';
+          Array.from(word).forEach(char => {
+            const charSpan = document.createElement('span');
+            charSpan.className = 'split-char';
+            charSpan.textContent = char;
+            wordSpan.appendChild(charSpan);
+          });
+          heading.appendChild(wordSpan);
+          heading.appendChild(document.createTextNode(' '));
+        });
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        const el = node;
+        const text = el.innerText;
+        el.innerHTML = '';
+        const words = text.split(/\s+/).filter(Boolean);
+        words.forEach(word => {
+          const wordSpan = document.createElement('span');
+          wordSpan.className = 'split-word';
+          Array.from(word).forEach(char => {
+            const charSpan = document.createElement('span');
+            charSpan.className = 'split-char';
+            charSpan.textContent = char;
+            wordSpan.appendChild(charSpan);
+          });
+          el.appendChild(wordSpan);
+          el.appendChild(document.createTextNode(' '));
+        });
+        heading.appendChild(el);
+      }
+    });
+
+    const chars = heading.querySelectorAll('.split-char');
+    if (chars.length > 0) {
+      gsap.fromTo(chars,
+        {
+          opacity: 0,
+          y: 35,
+          rotateX: -60,
+          scale: 0.92,
+          filter: "blur(3px)"
+        },
+        {
+          opacity: 1,
+          y: 0,
+          rotateX: 0,
+          scale: 1,
+          filter: "blur(0px)",
+          duration: 0.75,
+          ease: "power3.out",
+          stagger: 0.02,
+          scrollTrigger: {
+            trigger: heading,
+            start: "top 88%",
+            toggleActions: "play none none none"
+          }
+        }
+      );
+    }
+  });
+}
+
+/* --------------------------------------------------------------------------
+   0.1. Advanced 3D Card Specular Glare & Gyro-Tilt Physics
+   -------------------------------------------------------------------------- */
+function init3DCardPhysics() {
+  const cards = document.querySelectorAll('.jet-card, .studio-card, .opt-card, .stat-card, .customizer-preview, .radar-wrapper');
+  cards.forEach(card => {
+    card.classList.add('specular-card');
+
+    if (!card.querySelector('.card-glare')) {
+      const glare = document.createElement('div');
+      glare.className = 'card-glare';
+      card.appendChild(glare);
+    }
+
+    const glareEl = card.querySelector('.card-glare');
+
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = -((y - centerY) / centerY) * 10;
+      const rotateY = ((x - centerX) / centerX) * 12;
+
+      if (!card.closest('.horizontal-track.overlap-active') || card.classList.contains('anime-focus')) {
+        card.style.transform = `perspective(1000px) translateY(-8px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+      }
+
+      if (glareEl) {
+        glareEl.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(244, 226, 181, 0.28) 0%, transparent 60%)`;
+      }
+    });
+
+    card.addEventListener('mouseleave', () => {
+      if (!card.closest('.horizontal-track.overlap-active')) {
+        card.style.transform = '';
+      }
+    });
+  });
 }
 
 /* --------------------------------------------------------------------------
@@ -680,6 +803,8 @@ function renderFleetGrid() {
       );
     });
   }
+
+  init3DCardPhysics();
 }
 
 function initFleetFilters() {

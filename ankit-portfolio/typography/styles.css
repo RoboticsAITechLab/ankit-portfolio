@@ -141,10 +141,93 @@ body {
   100% { left: 150%; }
 }
 
+/* Kinetic Typography & Character Split Engine */
+.split-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  margin-right: 0.28em;
+}
+
+.split-char {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+  transform-origin: 50% 100%;
+}
+
 .text-gold {
   background: var(--gold-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-size: 200% auto;
+  animation: goldTextFlow 4s linear infinite;
+}
+
+@keyframes goldTextFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 3D Specular Glare & Multi-Layer Physics */
+.specular-card {
+  position: relative;
+  transform-style: preserve-3d;
+  perspective: 1200px;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  overflow: hidden;
+}
+
+.card-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(244, 226, 181, 0.18) 0%, transparent 65%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  mix-blend-mode: overlay;
+  z-index: 15;
+}
+
+.specular-card:hover .card-glare {
+  opacity: 1;
+}
+
+/* Internal 3D Depth Floating Layers */
+.specular-card .jet-tag,
+.specular-card .studio-tag,
+.specular-card .jet-price,
+.specular-card .btn-gold,
+.specular-card .opt-info {
+  transform: translateZ(25px);
+  transform-style: preserve-3d;
+}
+
+.specular-card .jet-img-wrapper,
+.specular-card .studio-card-img-wrapper {
+  transform: translateZ(12px);
+}
+
+/* Hero Badge Radar Glow Ripple */
+.hero-badge {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(223, 186, 103, 0.15);
+}
+
+.hero-badge::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  border: 1px solid var(--gold-primary);
+  opacity: 0;
+  animation: badgeRadarPulse 2.5s infinite cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes badgeRadarPulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.08); opacity: 0; }
 }
 
 .heading-xl {
