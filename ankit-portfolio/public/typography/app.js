@@ -102,8 +102,8 @@ if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-// Application Initialization
-document.addEventListener('DOMContentLoaded', () => {
+// Robust Dual Initialization (DOMContentLoaded + Window Load Backup)
+function startApp() {
   initNavbarScroll();
   renderFleetGrid();
   initFleetFilters();
@@ -111,58 +111,42 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCustomizerPreview();
   initRouteRadarCanvas();
   initMotionSystem();
+  initFallbackObserver();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', startApp);
+} else {
+  startApp();
+}
+
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    if (typeof ScrollTrigger !== 'undefined') {
+      ScrollTrigger.refresh();
+    }
+  }, 200);
 });
 
 /* ==========================================================================
    GSAP Motion System & ScrollTrigger Architecture
    ========================================================================== */
 function initMotionSystem() {
-  // Check Accessibility Reduced Motion
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReducedMotion) {
-    document.querySelectorAll('.reveal, .reveal-blur, .reveal-spring, .reveal-left, .reveal-right, .reveal-scale').forEach(el => {
-      el.style.opacity = '1';
-      el.style.transform = 'none';
-      el.style.filter = 'none';
-    });
-    return;
-  }
+  if (prefersReducedMotion) return;
 
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-    initFallbackObserver();
     return;
   }
 
-  const mm = gsap.matchMedia();
-
-  // Desktop Motion (> 1024px)
-  mm.add("(min-width: 1025px)", () => {
-    setupHeroTimeline();
-    setupSectionScrollTriggers();
-    setupPinnedSanctuarySection();
-    setupHorizontalScrollTrack();
-    setupStatCounters();
-    setupMagneticButtons();
-    setupScrollProgressBar();
-    setupParallaxBackgrounds();
-    setupCustomStudioCursor();
-  });
-
-  // Tablet Motion (769px - 1024px)
-  mm.add("(min-width: 769px) and (max-width: 1024px)", () => {
-    setupHeroTimeline();
-    setupSectionScrollTriggers();
-    setupHorizontalScrollTrack();
-    setupStatCounters();
-    setupScrollProgressBar();
-  });
-
-  // Mobile Motion (< 768px)
-  mm.add("(max-width: 768px)", () => {
-    setupSimplifiedMobileMotion();
-    setupStatCounters();
-    setupScrollProgressBar();
-  });
+  setupHeroTimeline();
+  setupSectionScrollTriggers();
+  setupPinnedSanctuarySection();
+  setupStatCounters();
+  setupMagneticButtons();
+  setupScrollProgressBar();
+  setupParallaxBackgrounds();
+  setupCustomStudioCursor();
 }
 
 /* --------------------------------------------------------------------------
@@ -198,104 +182,64 @@ function setupHeroTimeline() {
 }
 
 /* --------------------------------------------------------------------------
-   2. ScrollTrigger Section Entrance Reveals
+   2. Perfectly Timed ScrollTrigger Section Entrance Reveals
    -------------------------------------------------------------------------- */
 function setupSectionScrollTriggers() {
-  // 1. Section Headers - Smooth Fade Up & Scale
+  // Section Headers Reveal
   gsap.utils.toArray('.section-header').forEach(header => {
+    let initialProps = { opacity: 0.2 };
+    if (header.classList.contains('reveal-left')) {
+      initialProps.x = -50;
+    } else if (header.classList.contains('reveal-right')) {
+      initialProps.x = 50;
+    } else {
+      initialProps.y = 35;
+    }
+
     gsap.fromTo(header, 
-      { y: 55, opacity: 0, scale: 0.95 },
+      initialProps,
       {
-        y: 0, opacity: 1, scale: 1, duration: 0.9, ease: "power3.out",
+        x: 0,
+        y: 0,
+        opacity: 1,
+        duration: 0.7,
+        ease: "power2.out",
         scrollTrigger: {
           trigger: header,
-          start: "top 88%",
-          end: "bottom 10%",
-          toggleActions: "restart reverse restart reverse"
-        }
-      }
-    );
-  });
-
-  // 2. Reveal Left Elements (Slide in from Left with Rotation)
-  gsap.utils.toArray('.reveal-left').forEach(el => {
-    gsap.fromTo(el,
-      { x: -70, opacity: 0, rotationY: 15 },
-      {
-        x: 0, opacity: 1, rotationY: 0, duration: 0.95, ease: "power3.out",
-        scrollTrigger: {
-          trigger: el,
-          start: "top 88%",
-          end: "bottom 8%",
-          toggleActions: "restart reverse restart reverse"
-        }
-      }
-    );
-  });
-
-  // 3. Reveal Right Elements (Slide in from Right with Rotation)
-  gsap.utils.toArray('.reveal-right').forEach(el => {
-    gsap.fromTo(el,
-      { x: 70, opacity: 0, rotationY: -15 },
-      {
-        x: 0, opacity: 1, rotationY: 0, duration: 0.95, ease: "power3.out",
-        scrollTrigger: {
-          trigger: el,
-          start: "top 88%",
-          end: "bottom 8%",
-          toggleActions: "restart reverse restart reverse"
-        }
-      }
-    );
-  });
-
-  // 4. Reveal Scale Cards (Zoom Spring In)
-  gsap.utils.toArray('.reveal-scale, .glass-panel, .testimonial-card').forEach(el => {
-    gsap.fromTo(el,
-      { y: 45, opacity: 0, scale: 0.92 },
-      {
-        y: 0, opacity: 1, scale: 1, duration: 0.85, ease: "back.out(1.4)",
-        scrollTrigger: {
-          trigger: el,
           start: "top 90%",
-          end: "bottom 5%",
-          toggleActions: "restart reverse restart reverse"
+          toggleActions: "play none none none"
         }
       }
     );
   });
 
-  // 5. Staggered Row Animation for Airframe Matrix Table
-  gsap.utils.toArray('.matrix-row').forEach((row, idx) => {
-    gsap.fromTo(row,
-      { x: -30, opacity: 0 },
+  // Cards & Elements Reveal with directional classes support
+  gsap.utils.toArray('.glass-panel, .testimonial-card, .jet-card, .reveal-left, .reveal-right, .reveal-blur, .reveal-scale').forEach(card => {
+    let initialProps = { opacity: 0.3 };
+    if (card.classList.contains('reveal-left')) {
+      initialProps.x = -60;
+    } else if (card.classList.contains('reveal-right')) {
+      initialProps.x = 60;
+    } else {
+      initialProps.y = 30;
+    }
+
+    gsap.fromTo(card,
+      initialProps,
       {
-        x: 0, opacity: 1, duration: 0.6, delay: idx * 0.08, ease: "power2.out",
+        x: 0,
+        y: 0,
+        opacity: 1,
+        duration: 0.75,
+        ease: "power2.out",
         scrollTrigger: {
-          trigger: row,
-          start: "top 92%",
-          toggleActions: "restart reverse restart reverse"
+          trigger: card,
+          start: "top 90%",
+          toggleActions: "play none none none"
         }
       }
     );
   });
-
-  // 6. Radar & Flight Cockpit Wrapper Entrance
-  const radarWrapper = document.querySelector('.radar-wrapper');
-  if (radarWrapper) {
-    gsap.fromTo(radarWrapper,
-      { y: 70, opacity: 0, scale: 0.9, rotationX: 10 },
-      {
-        y: 0, opacity: 1, scale: 1, rotationX: 0, duration: 1.0, ease: "power3.out",
-        scrollTrigger: {
-          trigger: radarWrapper,
-          start: "top 85%",
-          end: "bottom 10%",
-          toggleActions: "restart reverse restart reverse"
-        }
-      }
-    );
-  }
 
   // 7. Empty Leg Banner
   const emptyBanner = document.querySelector('.empty-leg-banner');
@@ -498,9 +442,11 @@ function setupSimplifiedMobileMotion() {
   });
 }
 
-/* Fallback IntersectionObserver if GSAP CDN is blocked */
+/* Universal High-Performance Scroll Observer */
 function initFallbackObserver() {
-  const revealElements = document.querySelectorAll('.reveal, .reveal-blur, .reveal-spring, .reveal-left, .reveal-right, .reveal-scale');
+  const selector = '.reveal, .reveal-blur, .reveal-spring, .reveal-left, .reveal-right, .reveal-scale, .glass-panel, .testimonial-card, .jet-card, .matrix-row, .section-header';
+  const revealElements = document.querySelectorAll(selector);
+  
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -509,9 +455,17 @@ function initFallbackObserver() {
         entry.target.classList.remove('reveal-active');
       }
     });
-  }, { threshold: 0.1 });
+  }, { 
+    threshold: 0.05,
+    rootMargin: "0px 0px -20px 0px"
+  });
 
   revealElements.forEach(el => observer.observe(el));
+  
+  // Re-observe dynamic cards (like fleet items) after 300ms
+  setTimeout(() => {
+    document.querySelectorAll(selector).forEach(el => observer.observe(el));
+  }, 300);
 }
 
 /* --------------------------------------------------------------------------
@@ -541,7 +495,8 @@ function renderFleetGrid() {
 
   filteredFleet.forEach((jet, idx) => {
     const card = document.createElement('div');
-    card.className = `jet-card glass-panel`;
+    const directionClass = idx % 2 === 0 ? 'reveal-left' : 'reveal-right';
+    card.className = `jet-card glass-panel ${directionClass}`;
     card.innerHTML = `
       <div class="jet-img-wrapper">
         <img src="${jet.image}" alt="${jet.name}" class="jet-img">
@@ -578,19 +533,22 @@ function renderFleetGrid() {
     grid.appendChild(card);
   });
 
-  // Trigger Staggered Card Entrance via GSAP if loaded
+  // Trigger Staggered Card Entrance via GSAP with alternating Left/Right slide-ins
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-    gsap.fromTo('.fleet-grid .jet-card', 
-      { y: 40, opacity: 0, scale: 0.97 },
-      {
-        y: 0, opacity: 1, scale: 1, duration: 0.75, ease: "power2.out", stagger: 0.12,
-        scrollTrigger: {
-          trigger: '.fleet-grid',
-          start: "top 80%",
-          toggleActions: "play none none reverse"
+    gsap.utils.toArray('.fleet-grid .jet-card').forEach((card, idx) => {
+      const fromX = idx % 2 === 0 ? -70 : 70;
+      gsap.fromTo(card, 
+        { x: fromX, opacity: 0, scale: 0.96 },
+        {
+          x: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power2.out", delay: (idx % 3) * 0.15,
+          scrollTrigger: {
+            trigger: card,
+            start: "top 88%",
+            toggleActions: "play none none none"
+          }
         }
-      }
-    );
+      );
+    });
   }
 }
 
