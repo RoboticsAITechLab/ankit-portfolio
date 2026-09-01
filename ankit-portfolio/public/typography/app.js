@@ -264,34 +264,34 @@ function setupVelocityScrollSkew() {
 }
 
 /* --------------------------------------------------------------------------
-   1. Hero Entrance Sequence Timeline
+   1. Hero Entrance Sequence Timeline (Instant & Snappy Load)
    -------------------------------------------------------------------------- */
 function setupHeroTimeline() {
-  const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+  const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
 
   tl.fromTo(".hero-bg-img", 
-    { scale: 1.12, opacity: 0.8 }, 
-    { scale: 1.0, opacity: 1, duration: 1.6, ease: "power2.out" }
+    { scale: 1.05, opacity: 0.9 }, 
+    { scale: 1.0, opacity: 1, duration: 0.8, ease: "power2.out" }
   )
   .fromTo(".hero-badge", 
-    { y: 30, opacity: 0 }, 
-    { y: 0, opacity: 1, duration: 0.7 }, "-=1.2"
+    { y: 15, opacity: 0 }, 
+    { y: 0, opacity: 1, duration: 0.4 }, "-=0.6"
   )
   .fromTo(".heading-xl", 
-    { y: 40, opacity: 0 }, 
-    { y: 0, opacity: 1, duration: 0.85 }, "-=0.5"
+    { y: 20, opacity: 0 }, 
+    { y: 0, opacity: 1, duration: 0.5 }, "-=0.3"
   )
   .fromTo(".hero .subheading", 
-    { y: 25, opacity: 0 }, 
-    { y: 0, opacity: 1, duration: 0.7 }, "-=0.6"
+    { y: 15, opacity: 0 }, 
+    { y: 0, opacity: 1, duration: 0.4 }, "-=0.3"
   )
   .fromTo(".search-widget", 
-    { y: 50, opacity: 0, scale: 0.97 }, 
-    { y: 0, opacity: 1, scale: 1.0, duration: 0.85, ease: "power3.out" }, "-=0.5"
+    { y: 25, opacity: 0, scale: 0.98 }, 
+    { y: 0, opacity: 1, scale: 1.0, duration: 0.5, ease: "power2.out" }, "-=0.3"
   )
   .fromTo(".hero-stats .stat-card", 
-    { y: 30, opacity: 0 }, 
-    { y: 0, opacity: 1, duration: 0.6, stagger: 0.1 }, "-=0.4"
+    { y: 15, opacity: 0 }, 
+    { y: 0, opacity: 1, duration: 0.4, stagger: 0.06 }, "-=0.2"
   );
 }
 
@@ -327,15 +327,15 @@ function setupSectionScrollTriggers() {
     );
   });
 
-  // 2. Studio Cards Scroll-Triggered Overlapping Sequence
+  // 2. Studio Cards Scroll-Triggered Sequence
   if (typeof ScrollTrigger !== 'undefined') {
-    ScrollTrigger.batch(".horizontal-track .studio-card", {
-      start: "top 88%",
+    ScrollTrigger.batch(".studio-grid-3 .studio-card", {
+      start: "top 92%",
       onEnter: batch => gsap.fromTo(batch,
-        { x: 80, opacity: 0, scale: 0.92, rotateY: 10 },
+        { y: 35, opacity: 0, scale: 0.96 },
         {
-          x: 0, opacity: 1, scale: 0.96, rotateY: (i) => (i % 2 === 0 ? -4 : 3),
-          duration: 0.85, ease: "power3.out", stagger: 0.14,
+          y: 0, opacity: 1, scale: 1,
+          duration: 0.55, ease: "power2.out", stagger: 0.08,
           overwrite: "auto"
         }
       )
@@ -343,12 +343,12 @@ function setupSectionScrollTriggers() {
 
     // 3. Cabin Customizer Options Staggered Sequence
     ScrollTrigger.batch(".options-grid .opt-card", {
-      start: "top 90%",
+      start: "top 92%",
       onEnter: batch => gsap.fromTo(batch,
-        { y: 30, opacity: 0, scale: 0.95 },
+        { y: 25, opacity: 0, scale: 0.97 },
         {
           y: 0, opacity: 1, scale: 1,
-          duration: 0.65, ease: "power2.out", stagger: 0.1,
+          duration: 0.5, ease: "power2.out", stagger: 0.06,
           overwrite: "auto"
         }
       )
@@ -845,14 +845,14 @@ function renderFleetGrid() {
   // Trigger Staggered Card Entrance via GSAP with alternating Left/Right slide-ins
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     gsap.utils.toArray('.fleet-grid .jet-card').forEach((card, idx) => {
-      const fromX = idx % 2 === 0 ? -70 : 70;
+      const fromX = idx % 2 === 0 ? -40 : 40;
       gsap.fromTo(card, 
-        { x: fromX, opacity: 0, scale: 0.96 },
+        { x: fromX, opacity: 0, scale: 0.98 },
         {
-          x: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power2.out", delay: (idx % 3) * 0.15,
+          x: 0, opacity: 1, scale: 1, duration: 0.5, ease: "power2.out", delay: (idx % 3) * 0.08,
           scrollTrigger: {
             trigger: card,
-            start: "top 88%",
+            start: "top 92%",
             toggleActions: "play none none none"
           }
         }

@@ -1126,44 +1126,35 @@ footer {
    ========================================================================== */
 
 .studio-section {
-  padding: 3.5rem 0;
-  overflow: hidden;
+  padding: 4rem 0;
   position: relative;
 }
 
-.horizontal-scroll-container {
+.studio-collection-wrapper {
   width: 100%;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 1.5rem 0 2rem;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
 }
 
-.horizontal-scroll-container::-webkit-scrollbar {
-  display: none;
+.studio-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  padding: 0 1.5rem;
 }
 
-.horizontal-track {
-  display: flex;
-  gap: 1.75rem;
-  width: max-content;
-  padding: 1rem 2.5rem 2.5rem;
-  perspective: 1200px;
-  transition: gap 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+@media (max-width: 1024px) {
+  .studio-grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-/* 🎴 Overlapping 3D Anime Card Deck Stacking Mode */
-.horizontal-track.overlap-active {
-  gap: 0;
-  padding-left: 3rem;
-  padding-right: 5rem;
+@media (max-width: 640px) {
+  .studio-grid-3 {
+    grid-template-columns: 1fr;
+  }
 }
 
 .studio-card {
-  width: 340px;
-  flex-shrink: 0;
-  scroll-snap-align: start;
+  width: 100%;
   border-radius: var(--radius-lg);
   overflow: hidden;
   display: flex;
@@ -1172,41 +1163,30 @@ footer {
   background: rgba(15, 22, 34, 0.85);
   border: 1px solid var(--gold-border);
   box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.7);
-  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), 
-              box-shadow 0.45s ease, 
-              border-color 0.45s ease, 
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), 
+              box-shadow 0.4s ease, 
+              border-color 0.4s ease, 
               z-index 0.15s ease,
-              filter 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
-              opacity 0.45s ease;
+              filter 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+              opacity 0.4s ease;
   transform-origin: center center;
 }
 
-/* Overlap Deck offsets */
-.horizontal-track.overlap-active .studio-card {
-  margin-right: -75px;
-  transform: perspective(1000px) rotateY(-4deg) scale(0.96);
-  filter: brightness(0.92);
-}
-
-.horizontal-track.overlap-active .studio-card:nth-child(even) {
-  transform: perspective(1000px) rotateY(3deg) translateY(6px) scale(0.96);
-}
-
-/* 🌟 SPOTLIGHT FOCUS EFFECT (Hovered card scales UP & pops to front, all other cards shrink, blur & dim) */
-.horizontal-track:hover .studio-card {
+/* 🌟 SPOTLIGHT FOCUS EFFECT: Hovered card pops out, siblings dim & blur */
+.studio-grid-3:hover .studio-card {
   opacity: 0.45;
-  filter: blur(4px) brightness(0.65) grayscale(20%);
-  transform: perspective(1000px) scale(0.90) translateY(8px);
+  filter: blur(3px) brightness(0.7) grayscale(20%);
+  transform: scale(0.96);
 }
 
-.horizontal-track .studio-card:hover,
-.horizontal-track .studio-card.anime-focus {
+.studio-grid-3 .studio-card:hover,
+.studio-grid-3 .studio-card.anime-focus {
   opacity: 1 !important;
-  filter: blur(0px) brightness(1.15) !important;
-  z-index: 100 !important;
-  transform: perspective(1000px) translateY(-22px) scale(1.12) rotateY(0deg) !important;
+  filter: blur(0px) brightness(1.12) !important;
+  z-index: 50 !important;
+  transform: translateY(-14px) scale(1.05) !important;
   border-color: var(--gold-primary) !important;
-  box-shadow: 0 0 45px rgba(223, 186, 103, 0.6), 0 30px 60px rgba(0, 0, 0, 0.95) !important;
+  box-shadow: 0 0 40px rgba(223, 186, 103, 0.5), 0 25px 50px rgba(0, 0, 0, 0.95) !important;
 }
 
 @keyframes animeAuraGlow {
