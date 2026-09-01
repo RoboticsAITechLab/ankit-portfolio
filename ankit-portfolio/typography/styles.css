@@ -62,7 +62,7 @@ body {
   background: radial-gradient(circle at 50% 0%, #151D2C 0%, #07090E 70%);
 }
 
-/* All Headings & Display Titles Set to Helvetica */
+/* All Headings & Display Titles Set to Helvetica with Compact Tight Line Spacing */
 h1, h2, h3, h4, h5, h6,
 .heading-xl, .heading-lg, .heading-md, .heading-sm,
 .font-serif, .font-display,
@@ -70,6 +70,7 @@ h1, h2, h3, h4, h5, h6,
   font-family: var(--font-heading) !important;
   font-weight: 700;
   letter-spacing: -0.015em;
+  line-height: 1.12 !important;
 }
 
 /* Top Scroll Progress Indicator */
@@ -243,18 +244,19 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .heading-xl {
-  font-family: var(--font-serif);
+  font-family: var(--font-heading);
   font-size: clamp(2.5rem, 5vw, 4.5rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  line-height: 1.1;
+  line-height: 1.08 !important;
 }
 
 .heading-lg {
-  font-family: var(--font-serif);
+  font-family: var(--font-heading);
   font-size: clamp(1.8rem, 3vw, 2.8rem);
   font-weight: 700;
   letter-spacing: -0.01em;
+  line-height: 1.14 !important;
 }
 
 .subheading {
@@ -690,11 +692,32 @@ h1, h2, h3, h4, h5, h6,
   gap: 2rem;
 }
 
+/* 🌟 Spotlight focus on Fleet Grid */
+.fleet-grid:hover .jet-card {
+  opacity: 0.5;
+  filter: blur(3px) brightness(0.7);
+  transform: scale(0.96);
+}
+
 .jet-card {
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+              filter 0.45s ease,
+              opacity 0.45s ease,
+              box-shadow 0.45s ease,
+              border-color 0.45s ease;
+}
+
+.fleet-grid .jet-card:hover {
+  opacity: 1 !important;
+  filter: blur(0px) brightness(1.1) !important;
+  transform: translateY(-12px) scale(1.04) !important;
+  z-index: 10 !important;
+  border-color: var(--gold-primary) !important;
+  box-shadow: 0 0 35px rgba(223, 186, 103, 0.4), 0 25px 50px rgba(0, 0, 0, 0.9) !important;
 }
 
 .jet-img-wrapper {
@@ -1138,7 +1161,7 @@ footer {
 }
 
 .studio-card {
-  width: 360px;
+  width: 340px;
   flex-shrink: 0;
   scroll-snap-align: start;
   border-radius: var(--radius-lg);
@@ -1152,9 +1175,10 @@ footer {
   transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), 
               box-shadow 0.45s ease, 
               border-color 0.45s ease, 
-              z-index 0.1s ease,
-              filter 0.45s ease;
-  transform-origin: center bottom;
+              z-index 0.15s ease,
+              filter 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+              opacity 0.45s ease;
+  transform-origin: center center;
 }
 
 /* Overlap Deck offsets */
@@ -1168,15 +1192,21 @@ footer {
   transform: perspective(1000px) rotateY(3deg) translateY(6px) scale(0.96);
 }
 
-/* ⚡ Anime Hover & Focus Elevation with Electric Gold Aura */
-.studio-card:hover, 
-.studio-card.anime-focus {
-  z-index: 50 !important;
-  transform: perspective(1000px) translateY(-18px) scale(1.06) rotateY(0deg) !important;
+/* 🌟 SPOTLIGHT FOCUS EFFECT (Hovered card scales UP & pops to front, all other cards shrink, blur & dim) */
+.horizontal-track:hover .studio-card {
+  opacity: 0.45;
+  filter: blur(4px) brightness(0.65) grayscale(20%);
+  transform: perspective(1000px) scale(0.90) translateY(8px);
+}
+
+.horizontal-track .studio-card:hover,
+.horizontal-track .studio-card.anime-focus {
+  opacity: 1 !important;
+  filter: blur(0px) brightness(1.15) !important;
+  z-index: 100 !important;
+  transform: perspective(1000px) translateY(-22px) scale(1.12) rotateY(0deg) !important;
   border-color: var(--gold-primary) !important;
-  filter: brightness(1.1) !important;
-  box-shadow: 0 0 35px rgba(223, 186, 103, 0.5), 0 25px 50px rgba(0, 0, 0, 0.9) !important;
-  animation: animeAuraGlow 2s infinite alternate ease-in-out;
+  box-shadow: 0 0 45px rgba(223, 186, 103, 0.6), 0 30px 60px rgba(0, 0, 0, 0.95) !important;
 }
 
 @keyframes animeAuraGlow {
