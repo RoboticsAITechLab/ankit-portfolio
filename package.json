@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "build": "npm --prefix ankit-portfolio run build",
+    "start": "npm --prefix ankit-portfolio run start",
+    "dev": "npm --prefix ankit-portfolio run dev",
     "dev:portfolio": "npm --prefix ankit-portfolio run dev",
     "dev:admin": "npm --prefix admin-panel run dev",
     "dev:backend": "npm --prefix backend run dev",
