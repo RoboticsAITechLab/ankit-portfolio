@@ -82,15 +82,13 @@ body {
 /* Advanced Crisp Scroll & Micro-Interaction Design System */
 .reveal, .reveal-blur, .reveal-spring, .reveal-left, .reveal-right, .reveal-scale {
   opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease;
   will-change: transform, opacity;
 }
 
 .reveal-left { transform: translateX(-50px) translateY(0); }
 .reveal-right { transform: translateX(50px) translateY(0); }
 .reveal-scale { transform: scale(0.92) translateY(30px); }
-.reveal-blur { transform: translateY(30px); filter: blur(8px); }
+.reveal-blur { transform: translateY(30px); }
 
 /* Active class applied on scroll viewport entry */
 .reveal-active, 
@@ -102,7 +100,6 @@ body {
 .reveal-spring.reveal-active {
   opacity: 1 !important;
   transform: translate(0, 0) scale(1) !important;
-  filter: blur(0px) !important;
 }
 
 /* Stagger Delays */
@@ -124,7 +121,7 @@ body {
 .section-header {
   transform-origin: center center;
   backface-visibility: hidden;
-  -webkit-font-smoothing: subpixel-antialiased;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Gold Shimmer Sweep Effect */

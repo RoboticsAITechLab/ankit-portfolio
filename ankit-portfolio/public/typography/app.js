@@ -111,7 +111,6 @@ function startApp() {
   updateCustomizerPreview();
   initRouteRadarCanvas();
   initMotionSystem();
-  initFallbackObserver();
 }
 
 if (document.readyState === 'loading') {
@@ -154,88 +153,29 @@ function initMotionSystem() {
 }
 
 /* --------------------------------------------------------------------------
-   0. Kinetic Typography Engine (Split-Word & Character 3D Stagger Flip)
+   0. Kinetic Typography Engine (Smooth Stagger Reveal)
    -------------------------------------------------------------------------- */
 function initKineticTypography() {
-  const headings = document.querySelectorAll('.heading-lg');
-  headings.forEach(heading => {
-    if (heading.dataset.splitApplied) return;
-    heading.dataset.splitApplied = "true";
-
-    const childNodes = Array.from(heading.childNodes);
-    heading.innerHTML = '';
-
-    childNodes.forEach(node => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        const words = node.textContent.split(/\s+/).filter(Boolean);
-        words.forEach(word => {
-          const wordSpan = document.createElement('span');
-          wordSpan.className = 'split-word';
-          Array.from(word).forEach(char => {
-            const charSpan = document.createElement('span');
-            charSpan.className = 'split-char';
-            charSpan.textContent = char;
-            wordSpan.appendChild(charSpan);
-          });
-          heading.appendChild(wordSpan);
-          heading.appendChild(document.createTextNode(' '));
-        });
-      } else if (node.nodeType === Node.ELEMENT_NODE) {
-        const el = node;
-        const text = el.innerText;
-        el.innerHTML = '';
-        const words = text.split(/\s+/).filter(Boolean);
-        words.forEach(word => {
-          const wordSpan = document.createElement('span');
-          wordSpan.className = 'split-word';
-          Array.from(word).forEach(char => {
-            const charSpan = document.createElement('span');
-            charSpan.className = 'split-char';
-            charSpan.textContent = char;
-            wordSpan.appendChild(charSpan);
-          });
-          el.appendChild(wordSpan);
-          el.appendChild(document.createTextNode(' '));
-        });
-        heading.appendChild(el);
-      }
-    });
-
-    const chars = heading.querySelectorAll('.split-char');
-    if (chars.length > 0) {
-      gsap.fromTo(chars,
-        {
-          opacity: 0,
-          y: 35,
-          rotateX: -60,
-          scale: 0.92,
-          filter: "blur(3px)"
-        },
-        {
-          opacity: 1,
-          y: 0,
-          rotateX: 0,
-          scale: 1,
-          filter: "blur(0px)",
-          duration: 0.75,
-          ease: "power3.out",
-          stagger: 0.02,
-          scrollTrigger: {
-            trigger: heading,
-            start: "top 88%",
-            toggleActions: "play none none none"
-          }
+  gsap.utils.toArray('.heading-lg, .heading-xl').forEach(heading => {
+    gsap.fromTo(heading,
+      { y: 35, opacity: 0 },
+      {
+        y: 0, opacity: 1, duration: 0.8, ease: "power3.out",
+        scrollTrigger: {
+          trigger: heading,
+          start: "top 88%",
+          toggleActions: "play none none none"
         }
-      );
-    }
+      }
+    );
   });
 }
 
 /* --------------------------------------------------------------------------
-   0.1. Advanced 3D Card Specular Glare & Gyro-Tilt Physics
+   0.1. Advanced 3D Card Specular Glare & Gyro-Tilt Physics (60 FPS Throttled)
    -------------------------------------------------------------------------- */
 function init3DCardPhysics() {
-  const cards = document.querySelectorAll('.jet-card, .studio-card, .opt-card, .stat-card, .customizer-preview, .radar-wrapper');
+  const cards = document.querySelectorAll('.jet-card, .studio-card, .opt-card, .stat-card');
   cards.forEach(card => {
     card.classList.add('specular-card');
 
@@ -246,31 +186,43 @@ function init3DCardPhysics() {
     }
 
     const glareEl = card.querySelector('.card-glare');
+    let isMoving = false;
+    let rect = null;
+
+    card.addEventListener('mouseenter', () => {
+      rect = card.getBoundingClientRect();
+    }, { passive: true });
 
     card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      
-      const rotateX = -((y - centerY) / centerY) * 10;
-      const rotateY = ((x - centerX) / centerX) * 12;
+      if (isMoving) return;
+      isMoving = true;
+      requestAnimationFrame(() => {
+        if (!rect) rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = -((y - centerY) / centerY) * 8;
+        const rotateY = ((x - centerX) / centerX) * 10;
 
-      if (!card.closest('.horizontal-track.overlap-active') || card.classList.contains('anime-focus')) {
-        card.style.transform = `perspective(1000px) translateY(-8px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
-      }
+        if (!card.closest('.horizontal-track.overlap-active') || card.classList.contains('anime-focus')) {
+          card.style.transform = `perspective(1000px) translateY(-8px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+        }
 
-      if (glareEl) {
-        glareEl.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(244, 226, 181, 0.28) 0%, transparent 60%)`;
-      }
-    });
+        if (glareEl) {
+          glareEl.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(244, 226, 181, 0.22) 0%, transparent 60%)`;
+        }
+        isMoving = false;
+      });
+    }, { passive: true });
 
     card.addEventListener('mouseleave', () => {
+      rect = null;
       if (!card.closest('.horizontal-track.overlap-active')) {
         card.style.transform = '';
       }
-    });
+    }, { passive: true });
   });
 }
 
@@ -278,36 +230,36 @@ function init3DCardPhysics() {
    0.2. Velocity Scroll Skew & Inertial Spring Bounce Physics (Awwwards Style)
    -------------------------------------------------------------------------- */
 function setupVelocityScrollSkew() {
-  const skewTargets = '.jet-card, .studio-card, .opt-card, .stat-card, .customizer-preview, .radar-wrapper, .empty-leg-banner, .section-header';
+  const skewTargets = '.jet-card, .studio-card, .opt-card, .stat-card, .radar-wrapper, .empty-leg-banner, .section-header';
   
   const skewSetter = gsap.quickTo(skewTargets, "skewY", {
-    duration: 0.35,
+    duration: 0.4,
     ease: "power2.out"
   });
 
-  const clamp = gsap.utils.clamp(-3.2, 3.2);
+  const clamp = gsap.utils.clamp(-2.8, 2.8);
 
   ScrollTrigger.create({
     onUpdate: (self) => {
       const velocity = self.getVelocity();
-      // Calculate dynamic skew from scroll speed
-      const skewAngle = clamp(velocity / -280);
-      skewSetter(skewAngle);
+      if (Math.abs(velocity) > 50) {
+        skewSetter(clamp(velocity / -350));
+      }
     }
   });
 
-  // Inertial smooth spring bounce back when scrolling stops
-  let scrollStopTimer;
+  // Inertial smooth reset
+  let scrollTimer;
   window.addEventListener('scroll', () => {
-    clearTimeout(scrollStopTimer);
-    scrollStopTimer = setTimeout(() => {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => {
       gsap.to(skewTargets, {
         skewY: 0,
-        duration: 0.75,
-        ease: "elastic.out(1, 0.4)",
+        duration: 0.6,
+        ease: "power2.out",
         overwrite: "auto"
       });
-    }, 120);
+    }, 100);
   }, { passive: true });
 }
 
@@ -615,12 +567,8 @@ function playAnimeCardStep(cards, container) {
 }
 
 /* --------------------------------------------------------------------------
-   6. Bespoke Aviation Jet & Radar HUD Interactive Cursor Physics
+   6. Bespoke Aviation Jet & Radar HUD Interactive Cursor Physics (60 FPS Ticker)
    -------------------------------------------------------------------------- */
-let lastMouseX = 0;
-let lastMouseY = 0;
-let currentJetAngle = 0;
-
 function setupCustomStudioCursor() {
   const jetPlane = document.getElementById('jetCursorPlane');
   const jetRadar = document.getElementById('jetCursorRadar');
@@ -629,36 +577,41 @@ function setupCustomStudioCursor() {
 
   if (!jetPlane || !jetRadar) return;
 
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+  let currentPlaneX = mouseX;
+  let currentPlaneY = mouseY;
+  let currentRadarX = mouseX;
+  let currentRadarY = mouseY;
+  let lastX = mouseX;
+  let lastY = mouseY;
+  let targetAngle = 0;
+  let currentAngle = 0;
+
   window.addEventListener('mousemove', (e) => {
-    const mouseX = e.clientX;
-    const mouseY = e.clientY;
+    mouseX = e.clientX;
+    mouseY = e.clientY;
 
-    const dx = mouseX - lastMouseX;
-    const dy = mouseY - lastMouseY;
-    const speed = Math.sqrt(dx * dx + dy * dy);
-
-    if (speed > 1.5) {
-      const targetAngle = (Math.atan2(dy, dx) * 180 / Math.PI) + 90;
-      currentJetAngle = targetAngle;
+    const dx = mouseX - lastX;
+    const dy = mouseY - lastY;
+    if (dx * dx + dy * dy > 6) {
+      targetAngle = (Math.atan2(dy, dx) * 180 / Math.PI) + 90;
     }
+    lastX = mouseX;
+    lastY = mouseY;
+  }, { passive: true });
 
-    lastMouseX = mouseX;
-    lastMouseY = mouseY;
+  // 60 FPS GSAP Hardware-Accelerated Ticker (Zero GC Churn)
+  gsap.ticker.add(() => {
+    // Lerp positions
+    currentPlaneX += (mouseX - currentPlaneX) * 0.35;
+    currentPlaneY += (mouseY - currentPlaneY) * 0.35;
+    currentRadarX += (mouseX - currentRadarX) * 0.18;
+    currentRadarY += (mouseY - currentRadarY) * 0.18;
+    currentAngle += (targetAngle - currentAngle) * 0.2;
 
-    gsap.to(jetPlane, {
-      x: mouseX,
-      y: mouseY,
-      rotation: currentJetAngle,
-      duration: 0.12,
-      ease: "power2.out"
-    });
-
-    gsap.to(jetRadar, {
-      x: mouseX,
-      y: mouseY,
-      duration: 0.32,
-      ease: "power3.out"
-    });
+    jetPlane.style.transform = `translate3d(${currentPlaneX}px, ${currentPlaneY}px, 0) translate(-50%, -50%) rotate(${currentAngle}deg)`;
+    jetRadar.style.transform = `translate3d(${currentRadarX}px, ${currentRadarY}px, 0) translate(-50%, -50%)`;
   });
 
   // Interactive Elements Target Lock-On
