@@ -366,6 +366,19 @@ function setupSectionScrollTriggers() {
         }
       )
     });
+
+    // 5. Glass Panels & Interactive Widgets Entrance Reveal
+    ScrollTrigger.batch(".glass-panel, .radar-wrapper, .faq-accordion, .matrix-table-wrapper", {
+      start: "top 92%",
+      onEnter: batch => gsap.fromTo(batch,
+        { y: 35, opacity: 0.2 },
+        {
+          y: 0, opacity: 1,
+          duration: 0.75, ease: "power2.out", stagger: 0.08,
+          overwrite: "auto"
+        }
+      )
+    });
   }
 
   // 5. Empty Leg Banner

@@ -81,14 +81,10 @@ body {
 
 /* Advanced Crisp Scroll & Micro-Interaction Design System */
 .reveal, .reveal-blur, .reveal-spring, .reveal-left, .reveal-right, .reveal-scale {
-  opacity: 0;
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
   will-change: transform, opacity;
 }
-
-.reveal-left { transform: translateX(-50px) translateY(0); }
-.reveal-right { transform: translateX(50px) translateY(0); }
-.reveal-scale { transform: scale(0.92) translateY(30px); }
-.reveal-blur { transform: translateY(30px); }
 
 /* Active class applied on scroll viewport entry */
 .reveal-active, 
