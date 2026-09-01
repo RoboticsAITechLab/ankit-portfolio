@@ -150,6 +150,7 @@ function initMotionSystem() {
   setupCustomStudioCursor();
   setupCinematicCardOverlapSequence();
   init3DCardPhysics();
+  setupVelocityScrollSkew();
 }
 
 /* --------------------------------------------------------------------------
@@ -271,6 +272,43 @@ function init3DCardPhysics() {
       }
     });
   });
+}
+
+/* --------------------------------------------------------------------------
+   0.2. Velocity Scroll Skew & Inertial Spring Bounce Physics (Awwwards Style)
+   -------------------------------------------------------------------------- */
+function setupVelocityScrollSkew() {
+  const skewTargets = '.jet-card, .studio-card, .opt-card, .stat-card, .customizer-preview, .radar-wrapper, .empty-leg-banner, .section-header';
+  
+  const skewSetter = gsap.quickTo(skewTargets, "skewY", {
+    duration: 0.35,
+    ease: "power2.out"
+  });
+
+  const clamp = gsap.utils.clamp(-3.2, 3.2);
+
+  ScrollTrigger.create({
+    onUpdate: (self) => {
+      const velocity = self.getVelocity();
+      // Calculate dynamic skew from scroll speed
+      const skewAngle = clamp(velocity / -280);
+      skewSetter(skewAngle);
+    }
+  });
+
+  // Inertial smooth spring bounce back when scrolling stops
+  let scrollStopTimer;
+  window.addEventListener('scroll', () => {
+    clearTimeout(scrollStopTimer);
+    scrollStopTimer = setTimeout(() => {
+      gsap.to(skewTargets, {
+        skewY: 0,
+        duration: 0.75,
+        ease: "elastic.out(1, 0.4)",
+        overwrite: "auto"
+      });
+    }, 120);
+  }, { passive: true });
 }
 
 /* --------------------------------------------------------------------------

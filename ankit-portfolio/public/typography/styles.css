@@ -112,11 +112,19 @@ body {
 .delay-4 { transition-delay: 0.48s; }
 .delay-5 { transition-delay: 0.60s; }
 
-/* Interactive 3D Tilt Card Container */
-.tilt-card {
-  transition: transform 0.25s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
-  transform-style: preserve-3d;
-  perspective: 1000px;
+/* Interactive 3D Tilt Card Container & Smooth Velocity Skew */
+.tilt-card, 
+.jet-card, 
+.studio-card, 
+.opt-card, 
+.stat-card, 
+.customizer-preview, 
+.radar-wrapper, 
+.empty-leg-banner, 
+.section-header {
+  transform-origin: center center;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: subpixel-antialiased;
 }
 
 /* Gold Shimmer Sweep Effect */
