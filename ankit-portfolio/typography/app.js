@@ -183,10 +183,10 @@ function setupHeroTimeline() {
 }
 
 /* --------------------------------------------------------------------------
-   2. Perfectly Timed ScrollTrigger Section Entrance Reveals
+   2. Perfectly Timed ScrollTrigger Section Entrance Reveals & Card Sequences
    -------------------------------------------------------------------------- */
 function setupSectionScrollTriggers() {
-  // Section Headers Reveal
+  // 1. Section Headers Reveal
   gsap.utils.toArray('.section-header').forEach(header => {
     let initialProps = { opacity: 0.2 };
     if (header.classList.contains('reveal-left')) {
@@ -203,7 +203,7 @@ function setupSectionScrollTriggers() {
         x: 0,
         y: 0,
         opacity: 1,
-        duration: 0.7,
+        duration: 0.75,
         ease: "power2.out",
         scrollTrigger: {
           trigger: header,
@@ -214,50 +214,78 @@ function setupSectionScrollTriggers() {
     );
   });
 
-  // Cards & Elements Reveal with directional classes support
-  gsap.utils.toArray('.glass-panel, .testimonial-card, .jet-card, .reveal-left, .reveal-right, .reveal-blur, .reveal-scale').forEach(card => {
-    let initialProps = { opacity: 0.3 };
-    if (card.classList.contains('reveal-left')) {
-      initialProps.x = -60;
-    } else if (card.classList.contains('reveal-right')) {
-      initialProps.x = 60;
-    } else {
-      initialProps.y = 30;
-    }
-
-    gsap.fromTo(card,
-      initialProps,
-      {
-        x: 0,
-        y: 0,
-        opacity: 1,
-        duration: 0.75,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: card,
-          start: "top 90%",
-          toggleActions: "play none none none"
+  // 2. Studio Cards Scroll-Triggered Overlapping Sequence
+  if (typeof ScrollTrigger !== 'undefined') {
+    ScrollTrigger.batch(".horizontal-track .studio-card", {
+      start: "top 88%",
+      onEnter: batch => gsap.fromTo(batch,
+        { x: 80, opacity: 0, scale: 0.92, rotateY: 10 },
+        {
+          x: 0, opacity: 1, scale: 0.96, rotateY: (i) => (i % 2 === 0 ? -4 : 3),
+          duration: 0.85, ease: "power3.out", stagger: 0.14,
+          overwrite: "auto"
         }
-      }
-    );
-  });
+      )
+    });
 
-  // 7. Empty Leg Banner
+    // 3. Cabin Customizer Options Staggered Sequence
+    ScrollTrigger.batch(".options-grid .opt-card", {
+      start: "top 90%",
+      onEnter: batch => gsap.fromTo(batch,
+        { y: 30, opacity: 0, scale: 0.95 },
+        {
+          y: 0, opacity: 1, scale: 1,
+          duration: 0.65, ease: "power2.out", stagger: 0.1,
+          overwrite: "auto"
+        }
+      )
+    });
+
+    // 4. Testimonial & Generic Glass Panels Stagger Sequence
+    ScrollTrigger.batch(".testimonial-card, .matrix-row, .benefit-card", {
+      start: "top 90%",
+      onEnter: batch => gsap.fromTo(batch,
+        { y: 40, opacity: 0, scale: 0.96 },
+        {
+          y: 0, opacity: 1, scale: 1,
+          duration: 0.75, ease: "power2.out", stagger: 0.12,
+          overwrite: "auto"
+        }
+      )
+    });
+  }
+
+  // 5. Empty Leg Banner
   const emptyBanner = document.querySelector('.empty-leg-banner');
   if (emptyBanner) {
     gsap.fromTo(emptyBanner,
       { y: 50, opacity: 0, scale: 0.95 },
       {
-        y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power2.out",
+        y: 0, opacity: 1, scale: 1, duration: 0.85, ease: "power2.out",
         scrollTrigger: {
           trigger: emptyBanner,
           start: "top 88%",
-          end: "bottom 10%",
-          toggleActions: "restart reverse restart reverse"
+          toggleActions: "play none none none"
         }
       }
     );
   }
+
+  // 6. Directional Reveal Elements
+  gsap.utils.toArray('.reveal-left:not(.section-header):not(.studio-card):not(.jet-card), .reveal-right:not(.section-header):not(.studio-card):not(.jet-card)').forEach(el => {
+    const fromX = el.classList.contains('reveal-left') ? -65 : 65;
+    gsap.fromTo(el,
+      { x: fromX, opacity: 0 },
+      {
+        x: 0, opacity: 1, duration: 0.8, ease: "power2.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 88%",
+          toggleActions: "play none none none"
+        }
+      }
+    );
+  });
 }
 
 /* --------------------------------------------------------------------------
