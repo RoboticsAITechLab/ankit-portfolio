@@ -25,9 +25,10 @@
   --accent-emerald: #10B981;
   --accent-rose: #FB7185;
 
-  --font-serif: 'Cinzel', serif;
-  --font-sans: 'Plus Jakarta Sans', sans-serif;
-  --font-display: 'Syne', sans-serif;
+  --font-serif: 'Helvetica Neue', Helvetica, Arial, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Helvetica Neue', Helvetica, Arial, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Helvetica Neue', Helvetica, Arial, -apple-system, BlinkMacSystemFont, sans-serif;
 
   --radius-sm: 8px;
   --radius-md: 14px;
@@ -61,6 +62,16 @@ body {
   background: radial-gradient(circle at 50% 0%, #151D2C 0%, #07090E 70%);
 }
 
+/* All Headings & Display Titles Set to Helvetica */
+h1, h2, h3, h4, h5, h6,
+.heading-xl, .heading-lg, .heading-md, .heading-sm,
+.font-serif, .font-display,
+.logo-text, .section-header h2, .brand-text {
+  font-family: var(--font-heading) !important;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
 /* Top Scroll Progress Indicator */
 .scroll-progress-bar {
   position: fixed;
@@ -76,8 +87,8 @@ body {
 }
 
 /* Typography Helpers */
-.font-serif { font-family: var(--font-serif); }
-.font-display { font-family: var(--font-display); }
+.font-serif { font-family: var(--font-serif) !important; }
+.font-display { font-family: var(--font-display) !important; }
 
 /* Advanced Crisp Scroll & Micro-Interaction Design System */
 .reveal, .reveal-blur, .reveal-spring, .reveal-left, .reveal-right, .reveal-scale {
