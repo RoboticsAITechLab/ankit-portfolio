@@ -321,12 +321,22 @@
         <p class="subheading" style="margin: 0.5rem auto 0;">
           Crafting timeless brand identities, custom typography marks, and luxury visual environments inspired by Paramvir Jakhar's 14-year design legacy.
         </p>
+
+        <!-- Cinematic Anime Overlap Sequence Bar -->
+        <div class="anime-sequence-toolbar" style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+          <button class="btn btn-gold btn-sm anime-play-btn" id="animeReelBtn" onclick="toggleAnimeSequence()">
+            <span class="play-icon">▶</span> <span id="animeBtnText">Play Anime Sequence</span>
+          </button>
+          <button class="btn btn-outline btn-sm" id="overlapModeBtn" onclick="toggleOverlapDeckMode()">
+            <span>🎴 Overlap Stack Mode</span>
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Pinned Horizontal Scroll Wrapper -->
+    <!-- Pinned Horizontal Scroll & Cinematic Overlap Wrapper -->
     <div class="horizontal-scroll-container" id="horizontalContainer">
-      <div class="horizontal-track" id="horizontalTrack">
+      <div class="horizontal-track overlap-active" id="horizontalTrack">
         
         <div class="studio-card glass-panel">
           <div class="studio-card-img-wrapper">

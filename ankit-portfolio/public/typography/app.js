@@ -147,6 +147,7 @@ function initMotionSystem() {
   setupScrollProgressBar();
   setupParallaxBackgrounds();
   setupCustomStudioCursor();
+  setupCinematicCardOverlapSequence();
 }
 
 /* --------------------------------------------------------------------------
@@ -317,10 +318,111 @@ function setupStatCounters() {
 }
 
 /* --------------------------------------------------------------------------
-   5. Typography Studio Horizontal Scroll Track
+   5. Typography Studio 3D Overlapping Card Deck & Cinematic Anime Sequence
    -------------------------------------------------------------------------- */
-function setupHorizontalScrollTrack() {
-  // Uses native CSS smooth horizontal scroll snapping
+let isAnimeSequenceRunning = false;
+let animeSequenceInterval = null;
+let currentAnimeCardIndex = 0;
+
+function setupCinematicCardOverlapSequence() {
+  const track = document.getElementById('horizontalTrack');
+  if (!track) return;
+
+  const cards = track.querySelectorAll('.studio-card');
+  cards.forEach((card, i) => {
+    // Layer z-index so cards stack naturally
+    card.style.zIndex = `${i + 1}`;
+
+    // 3D Anime perspective tilt on mouse movement
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      const rotateX = -(y / (rect.height / 2)) * 10;
+      const rotateY = (x / (rect.width / 2)) * 12;
+
+      card.style.transform = `perspective(1000px) translateY(-18px) scale(1.06) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    card.addEventListener('mouseleave', () => {
+      if (track.classList.contains('overlap-active')) {
+        const isEven = i % 2 === 1;
+        card.style.transform = isEven 
+          ? 'perspective(1000px) rotateY(3deg) translateY(6px) scale(0.96)' 
+          : 'perspective(1000px) rotateY(-4deg) scale(0.96)';
+      } else {
+        card.style.transform = '';
+      }
+    });
+  });
+}
+
+function toggleOverlapDeckMode() {
+  const track = document.getElementById('horizontalTrack');
+  const btn = document.getElementById('overlapModeBtn');
+  if (!track) return;
+
+  track.classList.toggle('overlap-active');
+  const isOverlap = track.classList.contains('overlap-active');
+
+  if (btn) {
+    btn.innerHTML = isOverlap ? '<span>🎴 Overlap Stack Mode (Active)</span>' : '<span>🎴 Regular Grid Mode</span>';
+    if (isOverlap) {
+      btn.classList.add('btn-gold');
+      btn.classList.remove('btn-outline');
+    } else {
+      btn.classList.remove('btn-gold');
+      btn.classList.add('btn-outline');
+    }
+  }
+
+  setupCinematicCardOverlapSequence();
+}
+
+function toggleAnimeSequence() {
+  const btn = document.getElementById('animeReelBtn');
+  const btnText = document.getElementById('animeBtnText');
+  const container = document.getElementById('horizontalContainer');
+  const track = document.getElementById('horizontalTrack');
+  if (!container || !track) return;
+
+  const cards = track.querySelectorAll('.studio-card');
+  if (cards.length === 0) return;
+
+  isAnimeSequenceRunning = !isAnimeSequenceRunning;
+
+  if (isAnimeSequenceRunning) {
+    if (btnText) btnText.innerText = 'Pause Anime Sequence';
+    if (btn) btn.classList.add('active');
+
+    // Run first step immediately
+    playAnimeCardStep(cards, container);
+
+    animeSequenceInterval = setInterval(() => {
+      currentAnimeCardIndex = (currentAnimeCardIndex + 1) % cards.length;
+      playAnimeCardStep(cards, container);
+    }, 1800);
+  } else {
+    clearInterval(animeSequenceInterval);
+    if (btnText) btnText.innerText = 'Play Anime Sequence';
+    if (btn) btn.classList.remove('active');
+
+    cards.forEach(c => c.classList.remove('anime-focus'));
+  }
+}
+
+function playAnimeCardStep(cards, container) {
+  cards.forEach((card, idx) => {
+    if (idx === currentAnimeCardIndex) {
+      card.classList.add('anime-focus');
+      // Scroll container to smoothly center the active anime card
+      const cardLeft = card.offsetLeft;
+      const scrollPos = cardLeft - (container.clientWidth / 2) + (card.clientWidth / 2);
+      container.scrollTo({ left: scrollPos, behavior: 'smooth' });
+    } else {
+      card.classList.remove('anime-focus');
+    }
+  });
 }
 
 /* --------------------------------------------------------------------------
